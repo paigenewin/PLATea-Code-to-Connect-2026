@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { fetchRecentObservations } from "../services/inaturalistService";
+import { getBloomStatus } from "../services/getBloomStatus";
 
 const router = Router();
 
