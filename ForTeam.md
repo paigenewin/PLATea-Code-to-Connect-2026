@@ -8,3 +8,5 @@
 8. Ctr C to stop this
 9. Sign up in expo go first. make an account
 10. Scan the QR (it gonna take a minute fr)
+
+download tracking user location: npx expo install expo-location
