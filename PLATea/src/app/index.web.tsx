@@ -10,7 +10,7 @@ const MELBOURNE_BOUNDS: Bounds = {
   maxLng: 145.12,
 };
 
-const markerColor = '#397d54';
+const markerColor = '#FFC107';
 
 function getMarkerPosition(tree: Tree) {
   const left = ((tree.longitude - MELBOURNE_BOUNDS.minLng) /
@@ -105,14 +105,14 @@ const styles = {
   },
   marker: {
     position: 'absolute' as const,
-    width: 7,
-    height: 7,
-    marginLeft: -3,
-    marginTop: -3,
-    borderRadius: 4,
+    width: 18,
+    height: 18,
+    marginLeft: -9,
+    marginTop: -9,
+    borderRadius: 9,
+    borderWidth: 2,
     backgroundColor: markerColor,
-    borderWidth: 1,
-    borderColor: '#f4f8e9',
+    borderColor: '#fff8d6',
   },
   loadingOverlay: {
     position: 'absolute' as const,

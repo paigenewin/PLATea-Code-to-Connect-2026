@@ -57,6 +57,7 @@ export default function MapScreen() {
           {trees.map((tree, index) => (
             <Marker
               key={`${tree.id}-${index}`}
+              pinColor="#FFC107"
               coordinate={{ latitude: tree.latitude, longitude: tree.longitude }}
               title={tree.commonName ?? 'Unknown tree'}
               description={tree.scientificName ?? undefined}

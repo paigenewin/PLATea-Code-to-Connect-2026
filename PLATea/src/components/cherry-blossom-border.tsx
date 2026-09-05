@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Image, View, StyleSheet, LayoutChangeEvent } from 'react-native';
 
-const FLOWER_SCALES = [1.15, 2, 2.8, 1.45, 0.9, 2.35, 1.3];
-const FLOWER_ROTATIONS = [-24, 14, 32, -10, 20, -32, 8];
+const FLOWER_SCALES = [1.15, 2, 2.5, 1.45, 0.9, 2, 1.3];
+const FLOWER_ROTATIONS = [-24, 14, 32, -10, 20, -45, 8];
 
 const CherryBlossom = ({ scale = 1, rotation = 0 }: { scale?: number; rotation?: number }) => (
   <Image
@@ -20,7 +20,7 @@ export const CherryBlossomBorder: React.FC = () => {
     setDimensions({ width, height });
   };
 
-  const iconSizeWithSpacing = 50;
+  const iconSizeWithSpacing = 30;
   const topBottomCount = Math.floor(dimensions.width / iconSizeWithSpacing) || 0;
   const leftRightCount = Math.floor((dimensions.height - iconSizeWithSpacing * 2) / iconSizeWithSpacing) || 0;
 
