@@ -60,12 +60,12 @@ export const styles = StyleSheet.create({
     zIndex: 20,
   },
   topRightCorner: {
-    top: 12,
-    right: 12,
+    top: 0,
+    right: 0,
   },
   bottomLeftCorner: {
-    bottom: 12,
-    left: 12,
+    bottom: 0,
+    left: 0,
   },
   cluster: {
     position: 'absolute',
@@ -74,12 +74,12 @@ export const styles = StyleSheet.create({
     zIndex: 10,
   },
   topRightCluster: {
-    top: -24,
-    right: -24,
+    top: -46,
+    right: -40,
   },
   bottomLeftCluster: {
-    bottom: -24,
-    left: -24,
+    bottom: -40,
+    left: -40,
     transform: [{ rotate: '180deg' }],
   },
   clusterFlowerOne: {
@@ -94,7 +94,7 @@ export const styles = StyleSheet.create({
   },
   clusterFlowerThree: {
     position: 'absolute',
-    top: 150,
+    top: 130,
     right: 0,
   },
 });

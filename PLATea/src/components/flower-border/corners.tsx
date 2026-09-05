@@ -12,7 +12,7 @@ export const CornerFlowerBorder: React.FC<FlowerBorderVariantProps> = () => (
     </View>
     <View style={[styles.cluster, styles.topRightCluster]}>
       <View style={styles.clusterFlowerOne}>
-        <CherryBlossom scale={2.45} rotation={-18} />
+        <CherryBlossom scale={2} rotation={-18} />
       </View>
       <View style={styles.clusterFlowerTwo}>
         <CherryBlossom scale={1.6} rotation={22} />
@@ -23,10 +23,10 @@ export const CornerFlowerBorder: React.FC<FlowerBorderVariantProps> = () => (
     </View>
     <View style={[styles.cluster, styles.bottomLeftCluster]}>
       <View style={styles.clusterFlowerOne}>
-        <CherryBlossom scale={2.45} rotation={18} />
+        <CherryBlossom scale={2} rotation={18} />
       </View>
       <View style={styles.clusterFlowerTwo}>
-        <CherryBlossom scale={1} rotation={-22} />
+        <CherryBlossom scale={1.6} rotation={-22} />
       </View>
       <View style={styles.clusterFlowerThree}>
         <CherryBlossom scale={2.3} rotation={34} />

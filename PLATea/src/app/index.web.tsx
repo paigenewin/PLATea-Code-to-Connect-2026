@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { CherryBlossomBorder, FlowerBorderMode } from '../components/flower-border';
-import { FlowerBorderControls } from '../components/flower-border-controls';
 import { LoadingScreen } from '../components/loading-screen';
 import { Bounds, fetchMelbourneTrees, Tree } from '../services/cityOfMelbourne';
 
@@ -11,8 +10,6 @@ const MELBOURNE_BOUNDS: Bounds = {
   minLng: 144.8,
   maxLng: 145.12,
 };
-
-const markerColor = '#FF1493';
 
 function getMarkerPosition(tree: Tree) {
   const left = ((tree.longitude - MELBOURNE_BOUNDS.minLng) /
@@ -29,7 +26,7 @@ function getMarkerPosition(tree: Tree) {
 export default function MapScreenWeb() {
   const [trees, setTrees] = useState<Tree[]>([]);
   const [loading, setLoading] = useState(true);
-  const [flowerMode, setFlowerMode] = useState<FlowerBorderMode>('lots');
+  const [flowerMode] = useState<FlowerBorderMode>('corners');
 
   useEffect(() => {
     async function loadTrees() {
@@ -55,14 +52,14 @@ export default function MapScreenWeb() {
           <View style={styles.water} />
           <View style={styles.land} />
           {trees.map((tree, index) => (
-            <View
+              <Image
               key={`${tree.id}-${index}`}
+                source={require('../../assets/images/location_pin.png')}
               accessibilityLabel={tree.commonName ?? 'Unknown tree'}
               style={[styles.marker, getMarkerPosition(tree)]}
             />
           ))}
         </View>
-        <FlowerBorderControls mode={flowerMode} onChange={setFlowerMode} />
         <CherryBlossomBorder mode={flowerMode} />
       </View>
     </View>
@@ -109,14 +106,10 @@ const styles = {
   },
   marker: {
     position: 'absolute' as const,
-    width: 18,
-    height: 18,
-    marginLeft: -9,
-    marginTop: -9,
-    borderRadius: 9,
-    borderWidth: 2,
-    backgroundColor: markerColor,
-    borderColor: '#ffd1e8',
+    width: 30,
+    height: 40,
+    marginLeft: -15,
+    marginTop: -40,
   },
   loadingOverlay: {
     position: 'absolute' as const,

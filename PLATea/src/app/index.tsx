@@ -1,11 +1,10 @@
 // src/app/index.tsx
 
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { fetchMelbourneTrees, Tree, Bounds } from '../services/cityOfMelbourne';
 import { CherryBlossomBorder, FlowerBorderMode } from '../components/flower-border';
-import { FlowerBorderControls } from '../components/flower-border-controls';
 import { LoadingScreen } from '../components/loading-screen';
 
 const MELBOURNE_BOUNDS: Bounds = {
@@ -25,7 +24,7 @@ const INITIAL_REGION: Region = {
 export default function MapScreen() {
   const [trees, setTrees] = useState<Tree[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [flowerMode, setFlowerMode] = useState<FlowerBorderMode>('lots');
+  const [flowerMode] = useState<FlowerBorderMode>('corners');
 
   useEffect(() => {
     async function loadTrees() {
@@ -50,14 +49,19 @@ export default function MapScreen() {
           {trees.map((tree, index) => (
             <Marker
               key={`${tree.id}-${index}`}
-              pinColor="#FF1493"
               coordinate={{ latitude: tree.latitude, longitude: tree.longitude }}
+              anchor={{ x: 0.5, y: 1 }}
               title={tree.commonName ?? 'Unknown tree'}
               description={tree.scientificName ?? undefined}
-            />
+            >
+              <Image
+                source={require('../../assets/images/location_pin.png')}
+                style={{ width: 40, height: 40 }}
+                resizeMode="contain"
+              />
+            </Marker>
           ))}
         </MapView>
-        <FlowerBorderControls mode={flowerMode} onChange={setFlowerMode} />
         <CherryBlossomBorder mode={flowerMode} />
       </View>
     </View>

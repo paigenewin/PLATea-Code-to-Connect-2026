@@ -8,8 +8,6 @@ interface FlowerBorderControlsProps {
 }
 
 const options: { label: string; value: FlowerBorderMode }[] = [
-  { label: 'A little', value: 'little' },
-  { label: 'Lots', value: 'lots' },
   { label: 'Corners', value: 'corners' },
 ];
 

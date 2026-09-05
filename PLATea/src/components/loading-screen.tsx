@@ -8,9 +8,9 @@ export const LoadingScreen: React.FC = () => (
       style={styles.flower}
       resizeMode="contain"
     />
-    <Text style={styles.title}>PLUM</Text>
+    <Text style={styles.title}>PLUME</Text>
     <ActivityIndicator size="small" color="#e85a94" />
-    <Text>Loading trees...</Text>
+    <Text style={styles.loadingText}>Loading trees...</Text>
   </View>
 );
 
@@ -35,5 +35,11 @@ const styles = StyleSheet.create({
     color: '#e85a94',
     fontSize: 22,
     fontWeight: '700',
+  },
+  loadingText: {
+    color: '#fab9d4',
+    position: 'absolute',
+    bottom: 10,
+    fontSize: 16,
   },
 });
