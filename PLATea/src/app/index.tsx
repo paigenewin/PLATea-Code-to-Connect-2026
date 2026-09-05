@@ -55,7 +55,7 @@ export default function MapScreen() {
               description={tree.scientificName ?? undefined}
             >
               <Image
-                source={require('../../assets/images/location_pin.png')}
+                source={require('../../assets/images/location_pin_lightmode.png')}
                 style={{ width: 40, height: 40 }}
                 resizeMode="contain"
               />

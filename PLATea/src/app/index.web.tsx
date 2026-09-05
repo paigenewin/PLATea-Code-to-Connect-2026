@@ -54,7 +54,7 @@ export default function MapScreenWeb() {
           {trees.map((tree, index) => (
               <Image
               key={`${tree.id}-${index}`}
-                source={require('../../assets/images/location_pin.png')}
+                source={require('../../assets/images/location_pin_lightmode.png')}
               accessibilityLabel={tree.commonName ?? 'Unknown tree'}
               style={[styles.marker, getMarkerPosition(tree)]}
             />
