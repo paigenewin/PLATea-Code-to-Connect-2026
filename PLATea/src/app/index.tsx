@@ -6,10 +6,10 @@ import MapView, { Marker, Region } from 'react-native-maps';
 import { fetchMelbourneTrees, Tree, Bounds } from '../services/cityOfMelbourne';
 
 const MELBOURNE_BOUNDS: Bounds = {
-  minLat: -37.85,
-  maxLat: -37.78,
-  minLng: 144.9,
-  maxLng: 144.99,
+  minLat: -37.97,
+  maxLat: -37.7,
+  minLng: 144.8,
+  maxLng: 145.12,
 };
 
 const INITIAL_REGION: Region = {
@@ -26,7 +26,7 @@ export default function MapScreen() {
   useEffect(() => {
     async function loadTrees() {
       setLoading(true);
-      const results = await fetchMelbourneTrees(MELBOURNE_BOUNDS, 100);
+      const results = await fetchMelbourneTrees(MELBOURNE_BOUNDS, 1000);
       setTrees(results);
       setLoading(false);
     }
@@ -42,9 +42,9 @@ export default function MapScreen() {
         </View>
       )}
       <MapView style={styles.map} initialRegion={INITIAL_REGION}>
-        {trees.map((tree) => (
+        {trees.map((tree, index) => (
           <Marker
-            key={tree.id}
+            key={`${tree.id}-${index}`}
             coordinate={{ latitude: tree.latitude, longitude: tree.longitude }}
             title={tree.commonName ?? 'Unknown tree'}
             description={tree.scientificName ?? undefined}
