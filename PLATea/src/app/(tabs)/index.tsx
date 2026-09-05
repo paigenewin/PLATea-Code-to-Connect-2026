@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
-import { fetchMelbourneTrees, Tree, Bounds } from '../services/cityOfMelbourne';
+import { fetchMelbourneTrees, Tree, Bounds } from '../../services/cityOfMelbourne';
 
 const MELBOURNE_BOUNDS: Bounds = {
   minLat: -37.97,
