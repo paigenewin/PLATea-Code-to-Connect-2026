@@ -132,3 +132,80 @@ export async function fetchMelbourneTrees(
     return [];
   }
 }
+
+// adding a search function 
+export async function searchMelbourneTrees(
+  query: string,
+  limit: number = 50
+): Promise<Tree[]> {
+  const cleanQuery = query.trim();
+
+  // Don't search for empty text
+  if (cleanQuery.length < 2) {
+    return [];
+  }
+
+  const safeQuery = cleanQuery.replace(/"/g, '\\"');
+
+  const whereClause =
+    `search(common_name, "${safeQuery}") ` +
+    `OR search(scientific_name, "${safeQuery}") ` +
+    `OR search(genus, "${safeQuery}")`;
+
+  const url =
+    `${BASE_URL}?where=${encodeURIComponent(whereClause)}` +
+    `&limit=${limit}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+
+      console.error(
+        'Melbourne search API error:',
+        errorBody
+      );
+
+      throw new Error(
+        `Melbourne search API error: ${response.status}`
+      );
+    }
+
+    const data: MelbourneApiResponse =
+      await response.json();
+
+    const records =
+      Array.isArray(data.records)
+        ? data.records
+        : [];
+
+    return records.map((entry) => {
+      const fields = entry.record.fields;
+
+      return {
+        id: fields.com_id,
+        commonName: fields.common_name,
+        scientificName: fields.scientific_name,
+        genus: fields.genus,
+        family: fields.family,
+        dbh: fields.diameter_breast_height,
+        datePlanted: fields.date_planted,
+        ageDescription: fields.age_description,
+        precinct: fields.precinct,
+        locationType: fields.located_in,
+        latitude: fields.latitude,
+        longitude: fields.longitude,
+        council: 'melbourne' as const,
+      };
+    });
+  } catch (error) {
+    console.error(
+      'Failed to search Melbourne trees:',
+      error
+    );
+
+    return [];
+  }
+}
+
