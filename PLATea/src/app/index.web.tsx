@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { CherryBlossomBorder } from '../components/cherry-blossom-border';
+import { CherryBlossomBorder, FlowerBorderMode } from '../components/flower-border';
+import { FlowerBorderControls } from '../components/flower-border-controls';
 import { Bounds, fetchMelbourneTrees, Tree } from '../services/cityOfMelbourne';
 
 const MELBOURNE_BOUNDS: Bounds = {
@@ -10,7 +11,7 @@ const MELBOURNE_BOUNDS: Bounds = {
   maxLng: 145.12,
 };
 
-const markerColor = '#FFC107';
+const markerColor = '#FF1493';
 
 function getMarkerPosition(tree: Tree) {
   const left = ((tree.longitude - MELBOURNE_BOUNDS.minLng) /
@@ -27,6 +28,7 @@ function getMarkerPosition(tree: Tree) {
 export default function MapScreenWeb() {
   const [trees, setTrees] = useState<Tree[]>([]);
   const [loading, setLoading] = useState(true);
+  const [flowerMode, setFlowerMode] = useState<FlowerBorderMode>('lots');
 
   useEffect(() => {
     async function loadTrees() {
@@ -59,7 +61,8 @@ export default function MapScreenWeb() {
             />
           ))}
         </View>
-        <CherryBlossomBorder />
+        <FlowerBorderControls mode={flowerMode} onChange={setFlowerMode} />
+        <CherryBlossomBorder mode={flowerMode} />
       </View>
     </View>
   );
@@ -112,7 +115,7 @@ const styles = {
     borderRadius: 9,
     borderWidth: 2,
     backgroundColor: markerColor,
-    borderColor: '#fff8d6',
+    borderColor: '#ffd1e8',
   },
   loadingOverlay: {
     position: 'absolute' as const,

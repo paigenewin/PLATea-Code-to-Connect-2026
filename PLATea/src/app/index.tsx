@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { fetchMelbourneTrees, Tree, Bounds } from '../services/cityOfMelbourne';
-import { CherryBlossomBorder } from '../components/cherry-blossom-border';
+import { CherryBlossomBorder, FlowerBorderMode } from '../components/flower-border';
+import { FlowerBorderControls } from '../components/flower-border-controls';
 
 const MELBOURNE_BOUNDS: Bounds = {
   minLat: -37.97,
@@ -23,6 +24,7 @@ const INITIAL_REGION: Region = {
 export default function MapScreen() {
   const [trees, setTrees] = useState<Tree[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [flowerMode, setFlowerMode] = useState<FlowerBorderMode>('lots');
 
   useEffect(() => {
     async function loadTrees() {
@@ -57,14 +59,15 @@ export default function MapScreen() {
           {trees.map((tree, index) => (
             <Marker
               key={`${tree.id}-${index}`}
-              pinColor="#FFC107"
+              pinColor="#FF1493"
               coordinate={{ latitude: tree.latitude, longitude: tree.longitude }}
               title={tree.commonName ?? 'Unknown tree'}
               description={tree.scientificName ?? undefined}
             />
           ))}
         </MapView>
-        <CherryBlossomBorder />
+        <FlowerBorderControls mode={flowerMode} onChange={setFlowerMode} />
+        <CherryBlossomBorder mode={flowerMode} />
       </View>
     </View>
   );
