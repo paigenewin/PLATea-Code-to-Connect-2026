@@ -31,8 +31,12 @@ interface MelbourneRecord {
   longitude: number;
 }
 
+interface MelbourneRecordEntry {
+  record: MelbourneRecord;
+}
+
 interface MelbourneApiResponse {
-  results: MelbourneRecord[];
+  records?: MelbourneRecordEntry[];
 }
 
 export interface Bounds {
@@ -60,8 +64,9 @@ export async function fetchMelbourneTrees(
       throw new Error(`Melbourne tree API error: ${response.status}`);
     }
     const data: MelbourneApiResponse = await response.json();
+    const records = Array.isArray(data.records) ? data.records : [];
 
-    return data.results.map((record) => ({
+    return records.map(({ record }) => ({
       id: record.com_id,
       commonName: record.common_name,
       scientificName: record.scientific_name,
