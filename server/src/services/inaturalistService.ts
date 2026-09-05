@@ -1,4 +1,4 @@
-import type { Observation } from "../models/Observation";
+import type { Observation } from "../types/observation";
 
 const BASE_URL = "https://api.inaturalist.org/v1/observations";
 
