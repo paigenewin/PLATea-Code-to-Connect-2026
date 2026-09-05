@@ -1,15 +1,22 @@
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 
-import { useLocalSearchParams } from 'expo-router';
+import {
+  router,
+  useLocalSearchParams,
+} from 'expo-router';
 
 
 export default function TreeDetailsScreen() {
+  // Gets the tree information that was passed
+  // from the Explore/Search screen.
   const tree = useLocalSearchParams<{
+    id?: string;
     commonName: string;
     scientificName: string;
     genus: string;
@@ -24,11 +31,28 @@ export default function TreeDetailsScreen() {
   }>();
 
 
+  // When the user presses "Locate on Map",
+  // send this tree's coordinates to the Map screen.
+  function locateTree() {
+    router.navigate({
+      pathname: '/',
+      params: {
+        latitude: tree.latitude,
+        longitude: tree.longitude,
+        treeName: tree.commonName,
+        focusKey: Date.now().toString(),
+      },
+    });
+  }
+
+
   return (
     <ScrollView
       style={styles.screen}
       contentContainerStyle={styles.content}
     >
+
+      {/* TREE NAME */}
       <Text style={styles.commonName}>
         {tree.commonName || 'Unknown tree'}
       </Text>
@@ -39,6 +63,7 @@ export default function TreeDetailsScreen() {
       </Text>
 
 
+      {/* BLOOM INFORMATION */}
       <View style={styles.bloomCard}>
         <Text style={styles.label}>
           BLOOM STATUS
@@ -47,9 +72,26 @@ export default function TreeDetailsScreen() {
         <Text style={styles.bloomStatus}>
           Prediction coming soon
         </Text>
+
+        <Text style={styles.bloomDescription}>
+          Bloom prediction will later use
+          species, season and weather data.
+        </Text>
       </View>
 
 
+      {/* LOCATE BUTTON */}
+      <Pressable
+        style={styles.locateButton}
+        onPress={locateTree}
+      >
+        <Text style={styles.locateButtonText}>
+          Locate on Map
+        </Text>
+      </Pressable>
+
+
+      {/* TREE INFORMATION */}
       <Text style={styles.heading}>
         Tree information
       </Text>
@@ -92,11 +134,48 @@ export default function TreeDetailsScreen() {
             : ''
         }
       />
+
+
+      {/* COORDINATES */}
+      <Text style={styles.heading}>
+        Location
+      </Text>
+
+      <InfoRow
+        label="Latitude"
+        value={tree.latitude}
+      />
+
+      <InfoRow
+        label="Longitude"
+        value={tree.longitude}
+      />
+
+
+      {/* COMMUNITY — FOR LATER */}
+      <Text style={styles.heading}>
+        Community
+      </Text>
+
+      <View style={styles.communityCard}>
+        <Text style={styles.communityText}>
+          No community bloom reports yet.
+        </Text>
+      </View>
+
     </ScrollView>
   );
 }
 
 
+/*
+ * Reusable row for displaying tree information.
+ *
+ * Example:
+ *
+ * Genus        Prunus
+ * Family       Rosaceae
+ */
 function InfoRow({
   label,
   value,
@@ -106,6 +185,7 @@ function InfoRow({
 }) {
   return (
     <View style={styles.infoRow}>
+
       <Text style={styles.infoLabel}>
         {label}
       </Text>
@@ -113,6 +193,7 @@ function InfoRow({
       <Text style={styles.infoValue}>
         {value || 'Unknown'}
       </Text>
+
     </View>
   );
 }
@@ -124,10 +205,13 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 24,
     paddingBottom: 60,
   },
 
+
+  // Tree name
   commonName: {
     fontSize: 30,
     fontWeight: '700',
@@ -140,6 +224,8 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
 
+
+  // Bloom card
   bloomCard: {
     marginTop: 24,
     padding: 18,
@@ -159,6 +245,32 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 
+  bloomDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 8,
+    opacity: 0.6,
+  },
+
+
+  // Locate button
+  locateButton: {
+    height: 52,
+    backgroundColor: '#208AEF',
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+
+  locateButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
+
+  // Sections
   heading: {
     fontSize: 21,
     fontWeight: '700',
@@ -166,6 +278,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
+
+  // Information rows
   infoRow: {
     flexDirection: 'row',
     paddingVertical: 13,
@@ -183,5 +297,17 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
+  },
+
+
+  // Community placeholder
+  communityCard: {
+    padding: 18,
+    borderRadius: 14,
+    backgroundColor: '#F5F5F5',
+  },
+
+  communityText: {
+    opacity: 0.55,
   },
 });
