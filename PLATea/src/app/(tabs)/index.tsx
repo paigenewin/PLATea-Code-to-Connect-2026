@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { router, useLocalSearchParams } from 'expo-router';
+
 import { Bounds, fetchMelbourneTrees, Tree } from '@/services/cityOfMelbourne';
 import TreeMarkers from '@/components/map/treeMarkers';
 import SelectedTreeCard from '@/components/map/selectedTreeCard';
@@ -14,14 +15,12 @@ const MELBOURNE_BOUNDS: Bounds = {
   maxLng: 145.12,
 };
 
-
 const INITIAL_REGION: Region = {
   latitude: -37.8136,
   longitude: 144.9631,
   latitudeDelta: 0.05,
   longitudeDelta: 0.05,
 };
-
 
 type SelectedTreeParams = {
   id?: string;
@@ -39,39 +38,28 @@ type SelectedTreeParams = {
   focusKey?: string;
 };
 
-
 export default function MapScreen() {
-  const [trees, setTrees] =
-    useState<Tree[]>([]);
+  const [trees, setTrees] = useState<Tree[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mapReady, setMapReady] = useState(false);
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [mapReady, setMapReady] =
-    useState(false);
-
-
-  const mapRef =
-    useRef<MapView>(null);
-
+  const mapRef = useRef<MapView>(null);
 
   const selectedTree =
     useLocalSearchParams<SelectedTreeParams>();
 
-
   const {
     tracking,
     distance,
+    userLocation,
+    heading,
     startTracking,
     stopTracking,
   } = useTreeTracking({
     mapRef,
-    treeLatitude:
-      selectedTree.latitude,
-    treeLongitude:
-      selectedTree.longitude,
+    treeLatitude: selectedTree.latitude,
+    treeLongitude: selectedTree.longitude,
   });
-
 
   /*
    * Load Melbourne trees
@@ -87,7 +75,6 @@ export default function MapScreen() {
         );
 
       setTrees(results);
-
       setLoading(false);
     }
 
@@ -95,8 +82,8 @@ export default function MapScreen() {
   }, []);
 
   /*
-   * Zoom to the tree that was selected
-   * from the Search screen.
+   * Zoom to the tree selected
+   * from Search / Tree Details.
    */
   useEffect(() => {
     if (
@@ -112,6 +99,7 @@ export default function MapScreen() {
 
     const longitude =
       Number(selectedTree.longitude);
+
 
     if (
       Number.isNaN(latitude) ||
@@ -137,10 +125,8 @@ export default function MapScreen() {
     selectedTree.focusKey,
   ]);
 
-
   /*
-   * Open Tree Details again
-   * from the selected-tree card.
+   * Return from Map to Tree Details.
    */
   function backToTreeDetails() {
     router.push({
@@ -186,13 +172,11 @@ export default function MapScreen() {
     });
   }
 
-
   const hasSelectedTree =
     Boolean(
       selectedTree.latitude &&
       selectedTree.longitude
     );
-
 
   return (
     <View style={styles.container}>
@@ -201,31 +185,23 @@ export default function MapScreen() {
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" />
-
-          <Text>
-            Loading trees...
-          </Text>
+          <Text>Loading trees...</Text>
         </View>
       )}
-
 
       {/* MAP */}
       <MapView
         ref={mapRef}
         style={styles.map}
         initialRegion={INITIAL_REGION}
-
-        showsUserLocation
         showsMyLocationButton
-
         onMapReady={() =>
           setMapReady(true)
         }
       >
 
-        {/* NORMAL TREE MARKERS */}
+        {/* NORMAL MELBOURNE TREE MARKERS */}
         <TreeMarkers trees={trees} />
-
 
         {/* SELECTED TREE MARKER */}
         {hasSelectedTree && (
@@ -258,16 +234,60 @@ export default function MapScreen() {
           />
         )}
 
+        {/* CUSTOM USER LOCATION MARKER */}
+        {userLocation && (
+          <Marker
+            coordinate={userLocation}
+            anchor={{
+              x: 0.5,
+              y: 0.5,
+            }}
+            flat
+            zIndex={1000}
+          >
+
+            <View
+              style={[
+                styles.userMarker,
+
+                {
+                  transform: [
+                    {
+                      rotate:
+                        `${heading}deg`,
+                    },
+                  ],
+                },
+              ]}
+            >
+
+              {/* DIRECTION CONE */}
+              <View
+                style={
+                  styles.directionArrow
+                }
+              />
+
+
+              {/* USER BLUE DOT */}
+              <View
+                style={
+                  styles.userDot
+                }
+              />
+
+            </View>
+
+          </Marker>
+        )}
+
       </MapView>
 
-
-      {/* SELECTED TREE CARD */}
+      {/* SELECTED TREE POPUP */}
       {hasSelectedTree && (
         <SelectedTreeCard
           tree={selectedTree}
-
           distance={distance}
-
           tracking={tracking}
 
           onTrackPress={
@@ -286,7 +306,6 @@ export default function MapScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -296,6 +315,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  /*
+   * Loading popup
+   */
   loadingOverlay: {
     position: 'absolute',
     top: 20,
@@ -309,5 +331,66 @@ const styles = StyleSheet.create({
     padding: 10,
 
     borderRadius: 8,
+  },
+
+  /*
+   * Entire custom user marker.
+   *
+   * This whole component rotates
+   * according to the phone heading.
+   */
+  userMarker: {
+    width: 60,
+    height: 60,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+
+  /*
+   * Direction cone.
+   *
+   * This sits above the blue dot
+   * and points in the direction
+   * the phone is facing.
+   */
+  directionArrow: {
+    position: 'absolute',
+    top: 0,
+
+    width: 0,
+    height: 0,
+
+    borderLeftWidth: 12,
+    borderRightWidth: 12,
+    borderBottomWidth: 32,
+
+    borderLeftColor:
+      'transparent',
+
+    borderRightColor:
+      'transparent',
+
+    borderBottomColor:
+      'rgba(32, 138, 239, 0.35)',
+  },
+
+  /*
+   * User location dot.
+   */
+  userDot: {
+    width: 18,
+    height: 18,
+
+    borderRadius: 9,
+
+    backgroundColor:
+      '#208AEF',
+
+    borderWidth: 3,
+
+    borderColor:
+      'white',
   },
 });
