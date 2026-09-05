@@ -1,0 +1,452 @@
+[
+  {
+    "genus": "Acacia",
+    "scientificName": "Acacia retinodes",
+    "commonName": "Wirilda",
+    "treeCount": 423
+  },
+  {
+    "genus": "Acacia",
+    "scientificName": "Acacia aneura",
+    "commonName": "Mulga Wattle",
+    "treeCount": 30
+  },
+  {
+    "genus": "Acacia",
+    "scientificName": "Acacia sophorae",
+    "commonName": "Coast Wattle",
+    "treeCount": 4
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus calleryana",
+    "commonName": "Callery Pear",
+    "treeCount": 394
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus ussuriensis",
+    "commonName": "Manchurian Pear",
+    "treeCount": 255
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus calleryana 'Chanticleer'",
+    "commonName": "Chanticleer Pear",
+    "treeCount": 86
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus calleryana 'Cleveland Select'",
+    "commonName": "Ornamental Pear",
+    "treeCount": 32
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus calleryana 'Capital'",
+    "commonName": "Ornamental Pear",
+    "treeCount": 30
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus salicifolia",
+    "commonName": "Weeping Pear",
+    "treeCount": 8
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus betulifolia",
+    "commonName": "Birchleaf pear",
+    "treeCount": 4
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus pashia",
+    "commonName": "Wild Himalayan Pear",
+    "treeCount": 2
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus calleryana 'Bradford'",
+    "commonName": "Bradford Pear",
+    "treeCount": 1
+  },
+  {
+    "genus": "Pyrus",
+    "scientificName": "Pyrus nivalis",
+    "commonName": "Snow Pear",
+    "treeCount": 1
+  },
+  {
+    "genus": "Callistemon",
+    "scientificName": "Callistemon viminalis",
+    "commonName": "Weeping Bottlebrush",
+    "treeCount": 296
+  },
+  {
+    "genus": "Callistemon",
+    "scientificName": "Callistemon viminalis 'Kings Park Special'",
+    "commonName": "Callistemon Kings Park Special",
+    "treeCount": 251
+  },
+  {
+    "genus": "Callistemon",
+    "scientificName": "Callistemon rigidus",
+    "commonName": "Stiff bottlebrush",
+    "treeCount": 6
+  },
+  {
+    "genus": "Callistemon",
+    "scientificName": "Callistemon citrinus x viminalis 'Harkness'",
+    "commonName": "various",
+    "treeCount": 3
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton acerifolius",
+    "commonName": "Flame Tree",
+    "treeCount": 416
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton rupestris",
+    "commonName": "Queensland Bottle Tree",
+    "treeCount": 52
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton populneus x acerifolius 'Jerilderie Red'",
+    "commonName": "Red Flame Tree",
+    "treeCount": 42
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton discolor",
+    "commonName": "Queensland Lacebark",
+    "treeCount": 35
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton x roseus",
+    "commonName": "unknown",
+    "treeCount": 22
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton bidwillii",
+    "commonName": "Little kurrajong",
+    "treeCount": 12
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton bidwillii x B. discolor",
+    "commonName": "unknown",
+    "treeCount": 11
+  },
+  {
+    "genus": "Brachychiton",
+    "scientificName": "Brachychiton populneus x acerifolious 'Bella Pink'",
+    "commonName": "unknown",
+    "treeCount": 6
+  },
+  {
+    "genus": "Grevillea",
+    "scientificName": "Grevillea hilliana",
+    "commonName": "White Silky Oak",
+    "treeCount": 33
+  },
+  {
+    "genus": "Grevillea",
+    "scientificName": "Grevillea baileyana",
+    "commonName": "White Oak",
+    "treeCount": 6
+  },
+  {
+    "genus": "Grevillea",
+    "scientificName": "Grevillea excelsior",
+    "commonName": "Flame grevillea",
+    "treeCount": 6
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus sideroxylon rosea",
+    "commonName": "Red flowering ironbark",
+    "treeCount": 247
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus leucoxylon megalocarpa",
+    "commonName": "Large-fruited Yellow or Blue Gum",
+    "treeCount": 189
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus scoparia",
+    "commonName": "Willow Gum",
+    "treeCount": 165
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus grandis",
+    "commonName": "Flooded gum",
+    "treeCount": 161
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus leucoxylon rosea",
+    "commonName": "Red Flowering Yellow Gum",
+    "treeCount": 141
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus nicholii",
+    "commonName": "Willow Leaf Peppermint",
+    "treeCount": 50
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus torquata",
+    "commonName": "Coolgardie Gum",
+    "treeCount": 37
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus microcorys",
+    "commonName": "Tallowwood",
+    "treeCount": 21
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus salmonophloia",
+    "commonName": "Salmon Gum",
+    "treeCount": 17
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus robusta",
+    "commonName": "Swamp Mahogany",
+    "treeCount": 14
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus wandoo",
+    "commonName": "Wandoo",
+    "treeCount": 12
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus platypus",
+    "commonName": "Round Leaf Moort",
+    "treeCount": 11
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus punctata",
+    "commonName": "Grey Gum",
+    "treeCount": 11
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus rudis",
+    "commonName": "Swamp Gum",
+    "treeCount": 7
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus pulchella",
+    "commonName": "White Peppermint",
+    "treeCount": 6
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus cornuta",
+    "commonName": "Yate",
+    "treeCount": 5
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus leucoxylon 'Euky Dwarf'",
+    "commonName": "Dwarf yellow gum",
+    "treeCount": 5
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus bancroftii",
+    "commonName": "Bancroft's red gum",
+    "treeCount": 4
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus caesia",
+    "commonName": "Gungurru",
+    "treeCount": 4
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus macrandra",
+    "commonName": "Long-flowered Marlock",
+    "treeCount": 3
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus sargentii",
+    "commonName": "Salt River Gum",
+    "treeCount": 3
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus spathulata",
+    "commonName": "Swamp Mallet",
+    "treeCount": 3
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus fibrosa",
+    "commonName": "Broad-leaved Red Ironbark",
+    "treeCount": 2
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus resinifera",
+    "commonName": "Red mahogany",
+    "treeCount": 2
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus siderophloia",
+    "commonName": "Northern Grey Ironbark",
+    "treeCount": 2
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus torquata x E. woodwardii 'Torwood'",
+    "commonName": "Eucalyptus Torwood",
+    "treeCount": 2
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus calophylla",
+    "commonName": "tba",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus diversicolor",
+    "commonName": "Karri",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus lehmannii",
+    "commonName": "Bushy Yate",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus macrocarpa",
+    "commonName": "Mottlecah",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus moluccana",
+    "commonName": "Gum-topped Box",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus propinqua",
+    "commonName": "Grey Gum",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus salubris",
+    "commonName": "Gimlet",
+    "treeCount": 1
+  },
+  {
+    "genus": "Eucalyptus",
+    "scientificName": "Eucalyptus victrix",
+    "commonName": "Smooth-barked coolibah",
+    "treeCount": 1
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia ficifolia",
+    "commonName": "Flowering Gum",
+    "treeCount": 169
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia calophylla",
+    "commonName": "Red Gum",
+    "treeCount": 58
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia eximia nana",
+    "commonName": "Dwarf Yellow Bloodwood",
+    "treeCount": 50
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia torelliana",
+    "commonName": "Cadaghi",
+    "treeCount": 45
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia citriodora 'Scentuous'",
+    "commonName": "Dwarf lemon scented gum",
+    "treeCount": 41
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia eximia",
+    "commonName": "Yellow Bloodwood",
+    "treeCount": 24
+  },
+  {
+    "genus": "Corymbia",
+    "scientificName": "Corymbia ficifolia 'Wildfire'",
+    "commonName": "Eucalyptus wildfire",
+    "treeCount": 2
+  },
+  {
+    "genus": "Banksia",
+    "scientificName": "Banksia integrifolia fastigiata Ÿ??SentinelŸ??",
+    "commonName": "Banksia Sentinel",
+    "treeCount": 22
+  },
+  {
+    "genus": "Banksia",
+    "scientificName": "Banksia spinulosa",
+    "commonName": "Hairpin banksia",
+    "treeCount": 1
+  },
+  {
+    "genus": "Melaleuca",
+    "scientificName": "Melaleuca quinquenervia",
+    "commonName": "Broad-leaf Tea-tree",
+    "treeCount": 86
+  },
+  {
+    "genus": "Melaleuca",
+    "scientificName": "Melaleuca bracteata",
+    "commonName": "Black Tea Tree",
+    "treeCount": 12
+  },
+  {
+    "genus": "Melaleuca",
+    "scientificName": "Melaleuca elliptica",
+    "commonName": "Granite Bottlebrush",
+    "treeCount": 3
+  },
+  {
+    "genus": "Melaleuca",
+    "scientificName": "Melaleuca alternifolia",
+    "commonName": "Tea Tree",
+    "treeCount": 1
+  }
+]
