@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { CherryBlossomBorder, FlowerBorderMode } from '../components/flower-border';
 import { FlowerBorderControls } from '../components/flower-border-controls';
+import { LoadingScreen } from '../components/loading-screen';
 import { Bounds, fetchMelbourneTrees, Tree } from '../services/cityOfMelbourne';
 
 const MELBOURNE_BOUNDS: Bounds = {
@@ -33,7 +34,10 @@ export default function MapScreenWeb() {
   useEffect(() => {
     async function loadTrees() {
       setLoading(true);
+      const startedAt = Date.now();
       const results = await fetchMelbourneTrees(MELBOURNE_BOUNDS, 1000);
+      const remainingTime = Math.max(0, 5000 - (Date.now() - startedAt));
+      await new Promise((resolve) => setTimeout(resolve, remainingTime));
       setTrees(results);
       setLoading(false);
     }
@@ -45,10 +49,7 @@ export default function MapScreenWeb() {
     <View style={styles.page}>
       <View style={styles.mapFrame}>
         {loading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator size="large" color={markerColor} />
-            <Text>Loading trees...</Text>
-          </View>
+          <LoadingScreen />
         )}
         <View style={styles.mapSurface}>
           <View style={styles.water} />
@@ -125,5 +126,16 @@ const styles = {
     padding: 10,
     borderRadius: 8,
     backgroundColor: 'white',
+  },
+  loadingFlower: {
+    width: 48,
+    height: 48,
+    alignSelf: 'center' as const,
+  },
+  loadingTitle: {
+    alignSelf: 'center' as const,
+    color: '#e85a94',
+    fontSize: 22,
+    fontWeight: '700' as const,
   },
 };

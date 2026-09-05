@@ -1,11 +1,12 @@
 // src/app/index.tsx
 
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { fetchMelbourneTrees, Tree, Bounds } from '../services/cityOfMelbourne';
 import { CherryBlossomBorder, FlowerBorderMode } from '../components/flower-border';
 import { FlowerBorderControls } from '../components/flower-border-controls';
+import { LoadingScreen } from '../components/loading-screen';
 
 const MELBOURNE_BOUNDS: Bounds = {
   minLat: -37.97,
@@ -29,7 +30,10 @@ export default function MapScreen() {
   useEffect(() => {
     async function loadTrees() {
       setLoading(true);
+      const startedAt = Date.now();
       const results = await fetchMelbourneTrees(MELBOURNE_BOUNDS, 1000);
+      const remainingTime = Math.max(0, 5000 - (Date.now() - startedAt));
+      await new Promise((resolve) => setTimeout(resolve, remainingTime));
       setTrees(results);
       setLoading(false);
     }
@@ -40,20 +44,7 @@ export default function MapScreen() {
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         {loading && (
-          <View
-            style={{
-              position: 'absolute',
-              top: 20,
-              alignSelf: 'center',
-              zIndex: 1,
-              backgroundColor: 'white',
-              padding: 10,
-              borderRadius: 8,
-            }}
-          >
-            <ActivityIndicator size="large" />
-            <Text>Loading trees...</Text>
-          </View>
+          <LoadingScreen />
         )}
         <MapView style={{ flex: 1 }} initialRegion={INITIAL_REGION}>
           {trees.map((tree, index) => (
