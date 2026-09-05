@@ -114,18 +114,12 @@ export async function fetchMelbourneTrees(
     }
 
     return trees.filter((tree) => {
-      const isGumTree =
-        tree.commonName?.toLowerCase().includes('gum') ||
-        tree.scientificName?.toLowerCase().includes('eucalyptus') ||
-        tree.scientificName?.toLowerCase().includes('corymbia');
-
       return (
-        !isGumTree &&
         tree.latitude >= minLat &&
         tree.latitude <= maxLat &&
         tree.longitude >= minLng &&
         tree.longitude <= maxLng
-      );
+);
     });
   } catch (error) {
     console.error('Failed to fetch Melbourne trees:', error);
