@@ -63,6 +63,9 @@ export default function TreeDetailsScreen() {
   const [bloomStatus, setBloomStatus] =
     useState<BloomStatus | null>(null);
 
+  const [bloomError, setBloomError] =
+    useState(false);
+
   const [bloomLoading, setBloomLoading] =
     useState(false);
 
@@ -71,29 +74,47 @@ export default function TreeDetailsScreen() {
    * tree's species from the PLATea server.
    */
   useEffect(() => {
-    if (!tree.scientificName) {
-      setBloomStatus(null);
-      return;
-    }
+  if (!tree.scientificName) {
+    setBloomStatus(null);
+    setBloomError(false);
+    return;
+  }
 
-    let cancelled = false;
-    setBloomLoading(true);
+  let cancelled = false;
 
-    fetchBloomPrediction(tree.scientificName)
-      .then((status) => {
-        if (!cancelled) setBloomStatus(status);
-      })
-      .catch(() => {
-        if (!cancelled) setBloomStatus('unknown');
-      })
-      .finally(() => {
-        if (!cancelled) setBloomLoading(false);
-      });
+  setBloomLoading(true);
+  setBloomError(false);
+  setBloomStatus(null);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [tree.scientificName]);
+  fetchBloomPrediction(tree.scientificName)
+    .then((status) => {
+      if (!cancelled) {
+        setBloomStatus(status);
+      }
+    })
+    .catch((error) => {
+      console.error(
+        'Failed to fetch bloom prediction:',
+        error
+      );
+
+      if (!cancelled) {
+        setBloomError(true);
+        setBloomStatus(null);
+      }
+    })
+    .finally(() => {
+      if (!cancelled) {
+        setBloomLoading(false);
+      }
+    });
+
+  return () => {
+    cancelled = true;
+  };
+}, [tree.scientificName]);
+
+
   /*
    * Go to the Map and send this
    * tree's information with it.
@@ -163,7 +184,9 @@ export default function TreeDetailsScreen() {
 
         <Text style={styles.bloomStatus}>
           {bloomLoading
-            ? 'Fetching prediction...'
+          ? 'Fetching prediction...'
+          : bloomError
+            ? "Couldn't load bloom status"
             : bloomStatus
               ? BLOOM_STATUS_TEXT[bloomStatus]
               : 'Status unknown'}
