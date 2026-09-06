@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "PLATea",
-    "slug": "PLATea",
+    "name": "PLUM",
+    "slug": "PLUM",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "platea",
+    "icon": "./assets/images/cherryblossom.png",
+    "scheme": "plum",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.allyjt.PLATea",
+      "bundleIdentifier": "com.allyjt.PLUM",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { Marker } from 'react-native-maps';
-
+const MAPBOX_TOKEN = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN;
 type Props = {
   coordinate: {
     latitude: number;
