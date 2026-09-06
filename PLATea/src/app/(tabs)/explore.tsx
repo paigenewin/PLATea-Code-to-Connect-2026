@@ -10,6 +10,11 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 import {
   searchMelbourneTrees,
@@ -37,6 +42,12 @@ export default function ExploreScreen() {
 
   const [bloomingError, setBloomingError] =
     useState(false);
+
+  const bloomingScale = useSharedValue(1);
+
+  const bloomingAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: bloomingScale.value }],
+  }));
 
 
   useEffect(() => {
@@ -140,25 +151,43 @@ export default function ExploreScreen() {
         }}
       />
 
-      <Pressable
-        style={[
-          styles.bloomingButton,
-          showingBlooming && styles.bloomingButtonActive,
-        ]}
-        onPress={showBlooming}
-      >
-        <Image 
-          source = { require('../../../assets/images/cherryblossom.png') } 
-          style={{ width: 20, height: 20, marginRight: 8 }} />
-        <Text
-          style={[
-            styles.bloomingButtonText,
-            showingBlooming && styles.bloomingButtonTextActive,
+      <Animated.View style={bloomingAnimatedStyle}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.bloomingButton,
+            pressed && styles.bloomingButtonPressed,
           ]}
+          onPress={showBlooming}
+          onPressIn={() => {
+            bloomingScale.value = withSpring(0.92, {
+              damping: 15,
+              stiffness: 300,
+            });
+          }}
+          onPressOut={() => {
+            bloomingScale.value = withSpring(1, {
+              damping: 6,
+              stiffness: 200,
+            });
+          }}
         >
-          Blooming now
-        </Text>
-      </Pressable>
+          {({ pressed }) => (
+            <>
+              <Image
+                source = { require('../../../assets/images/cherryblossom.png') }
+                style={{ width: 30, height: 30, marginRight: 8 }} />
+              <Text
+                style={[
+                  styles.bloomingButtonText,
+                  pressed && styles.bloomingButtonTextPressed,
+                ]}
+              >
+                Blooming now
+              </Text>
+            </>
+          )}
+        </Pressable>
+      </Animated.View>
 
 
       {!loading && showingBlooming && bloomingError && (

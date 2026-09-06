@@ -23,9 +23,10 @@ export const styles = StyleSheet.create({
   },
 
   searchInput: {
+    color:'#e43c8a',
     height: 52,
     borderWidth: 1,
-    borderColor: '#cccccc',
+    borderColor: '#f5a3c9',
     borderRadius: 14,
     paddingHorizontal: 16,
     fontSize: 16,
@@ -36,25 +37,25 @@ export const styles = StyleSheet.create({
     height: 44,
     flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#e85a94',
+    backgroundColor: '#ff62ab',
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
   },
 
-  bloomingButtonActive: {
-    backgroundColor: '#e85a94',
+  bloomingButtonPressed: {
+    backgroundColor: '#eb0062',
   },
 
   bloomingButtonText: {
-    color: '#e85a94',
+    color: '#fff0f7',
     fontSize: 15,
     fontWeight: '700',
   },
 
-  bloomingButtonTextActive: {
-    color: 'white',
+  bloomingButtonTextPressed: {
+    color: '#fff0f7',
   },
 
   emptyState: {
