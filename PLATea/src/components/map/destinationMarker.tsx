@@ -33,7 +33,7 @@ export default function DestinationMarker({
 
 const styles = StyleSheet.create({
   pin: {
-    width: 44,
-    height: 44,
+    width: 80,
+    height: 80,
   },
 });
