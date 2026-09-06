@@ -4,10 +4,10 @@
 Built for **Code to Connect 2026**.
 
 Group Member:
-Nam Anh Trinh
-Ha Linh Nguyen
-Ha Phuong Nguyen
-Phuong Trang Tran
+- Nam Anh Trinh
+- Ha Linh Nguyen
+- Ha Phuong Nguyen
+- Phuong Trang Tran
 
 # Product name: 🌸 PeTAL
 
