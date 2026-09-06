@@ -206,7 +206,7 @@ export async function searchMelbourneTrees(
 // finds trees matching any of the given scientific names (e.g. currently-blooming species)
 export async function searchTreesBySpecies(
   scientificNames: string[],
-  limit: number = 100
+  maxResults: number = 2000
 ): Promise<Tree[]> {
   if (scientificNames.length === 0) {
     return [];
@@ -219,53 +219,78 @@ export async function searchTreesBySpecies(
     })
     .join(' OR ');
 
-  const url =
-    `${BASE_URL}?where=${encodeURIComponent(whereClause)}` +
-    `&limit=${limit}`;
+  const pageSize = 100;
+  const trees: Tree[] = [];
 
   try {
-    const response = await fetch(url);
+    let offset = 0;
 
-    if (!response.ok) {
-      const errorBody = await response.text();
+    // Keep paging until the API runs out of matching
+    // trees (a page comes back smaller than pageSize)
+    // or we hit the safety cap - a single request was
+    // silently dropping every blooming tree past 100.
+    while (trees.length < maxResults) {
+      const url =
+        `${BASE_URL}?where=${encodeURIComponent(whereClause)}` +
+        `&limit=${pageSize}&offset=${offset}`;
 
-      console.error(
-        'Melbourne species search API error:',
-        errorBody
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+
+        console.error(
+          'Melbourne species search API error:',
+          errorBody
+        );
+
+        throw new Error(
+          `Melbourne species search API error: ${response.status}`
+        );
+      }
+
+      const data: MelbourneApiResponse =
+        await response.json();
+
+      const records =
+        Array.isArray(data.records)
+          ? data.records
+          : [];
+
+      if (records.length === 0) {
+        break;
+      }
+
+      trees.push(
+        ...records.map((entry) => {
+          const fields = entry.record.fields;
+
+          return {
+            id: fields.com_id,
+            commonName: fields.common_name,
+            scientificName: fields.scientific_name,
+            genus: fields.genus,
+            family: fields.family,
+            dbh: fields.diameter_breast_height,
+            datePlanted: fields.date_planted,
+            ageDescription: fields.age_description,
+            precinct: fields.precinct,
+            locationType: fields.located_in,
+            latitude: fields.latitude,
+            longitude: fields.longitude,
+            council: 'melbourne' as const,
+          };
+        })
       );
 
-      throw new Error(
-        `Melbourne species search API error: ${response.status}`
-      );
+      if (records.length < pageSize) {
+        break;
+      }
+
+      offset += pageSize;
     }
 
-    const data: MelbourneApiResponse =
-      await response.json();
-
-    const records =
-      Array.isArray(data.records)
-        ? data.records
-        : [];
-
-    return records.map((entry) => {
-      const fields = entry.record.fields;
-
-      return {
-        id: fields.com_id,
-        commonName: fields.common_name,
-        scientificName: fields.scientific_name,
-        genus: fields.genus,
-        family: fields.family,
-        dbh: fields.diameter_breast_height,
-        datePlanted: fields.date_planted,
-        ageDescription: fields.age_description,
-        precinct: fields.precinct,
-        locationType: fields.located_in,
-        latitude: fields.latitude,
-        longitude: fields.longitude,
-        council: 'melbourne' as const,
-      };
-    });
+    return trees;
   } catch (error) {
     console.error(
       'Failed to search Melbourne trees by species:',
