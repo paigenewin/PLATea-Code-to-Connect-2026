@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   },
   bottomRightCorner: {
     bottom: 0,
-    right: 0,
+    right: -30,
   },
   cluster: {
     position: 'absolute',
@@ -86,7 +86,7 @@ export const styles = StyleSheet.create({
     transform: [{ rotate: '180deg' }],
   },
   bottomRightCluster: {
-    bottom: -40,
+    bottom: -50,
     right: -40,
   },
   clusterFlowerOne: {
@@ -101,7 +101,7 @@ export const styles = StyleSheet.create({
   },
   clusterFlowerThree: {
     position: 'absolute',
-    top: 150,
+    top: 10,
     right: 0,
   },
 });
