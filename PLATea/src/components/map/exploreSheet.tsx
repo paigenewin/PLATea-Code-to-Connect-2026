@@ -15,6 +15,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { explorestyles } from '../../hooks/exploreSheet';
 
 import {
@@ -38,6 +39,7 @@ type Props = {
   topInset: number;
   imageSearchResults: NearbyTree[] | null;
   onClearImageSearch: () => void;
+  onTrackResult: (item: ResultItem) => void;
 };
 
 // pull-up panel over the map: same search
@@ -53,6 +55,7 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       topInset,
       imageSearchResults,
       onClearImageSearch,
+      onTrackResult,
     },
     ref
   ) {
@@ -263,33 +266,43 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
           }
           renderItem={({ item, index }) => (
             <Pressable
-              style={explorestyles.result}
+              style={[explorestyles.result, explorestyles.resultRow]}
               onPress={() => openResult(item)}
             >
-              <View style={explorestyles.resultNameRow}>
-                <Text style={explorestyles.commonName}>
-                  {item.commonName ?? 'Unknown tree'}
+              <View style={explorestyles.resultText}>
+                <View style={explorestyles.resultNameRow}>
+                  <Text style={explorestyles.commonName}>
+                    {item.commonName ?? 'Unknown tree'}
+                  </Text>
+
+                  {showingImageResults && index === 0 && (
+                    <View style={explorestyles.nearestBadge}>
+                      <Text style={explorestyles.nearestBadgeText}>
+                        Nearest
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                <Text style={explorestyles.scientificName}>
+                  {item.scientificName ?? 'Scientific name unavailable'}
                 </Text>
 
-                {showingImageResults && index === 0 && (
-                  <View style={explorestyles.nearestBadge}>
-                    <Text style={explorestyles.nearestBadgeText}>
-                      Nearest
-                    </Text>
-                  </View>
-                )}
+                <Text style={explorestyles.precinct}>
+                  {item.precinct ?? 'Melbourne'}
+                  {isNearbyTree(item)
+                    ? ` · ${formatDistance(item.distanceMetres)}`
+                    : ''}
+                </Text>
               </View>
 
-              <Text style={explorestyles.scientificName}>
-                {item.scientificName ?? 'Scientific name unavailable'}
-              </Text>
-
-              <Text style={explorestyles.precinct}>
-                {item.precinct ?? 'Melbourne'}
-                {isNearbyTree(item)
-                  ? ` · ${formatDistance(item.distanceMetres)}`
-                  : ''}
-              </Text>
+              <Pressable
+                style={explorestyles.trackButton}
+                hitSlop={8}
+                onPress={() => onTrackResult(item)}
+              >
+                <Ionicons name="navigate" size={20} color="#e43c8a" />
+              </Pressable>
             </Pressable>
           )}
         />

@@ -59,6 +59,20 @@ export const explorestyles = StyleSheet.create({
     borderBottomColor: '#eeeeee',
   },
 
+  resultRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  resultText: {
+    flex: 1,
+  },
+
+  trackButton: {
+    padding: 8,
+    marginLeft: 8,
+  },
+
   commonName: {
     fontSize: 18,
     fontWeight: '600',

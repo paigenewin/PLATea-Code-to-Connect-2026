@@ -16,6 +16,7 @@ export type SelectedTreeParams = {
   latitude?: string;
   longitude?: string;
   focusKey?: string;
+  autoTrack?: string;
 };
 
 type Options = {

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Region } from 'react-native-maps';
@@ -122,6 +122,55 @@ export default function MapScreen() {
 
     router.replace('/');
   }
+
+  /*
+   * Select a tree from a results list and start
+   * tracking it immediately, without the extra
+   * step of opening its Tree Details first.
+   */
+  function trackFromList(tree: {
+    id?: string;
+    commonName?: string | null;
+    scientificName?: string | null;
+    precinct?: string | null;
+    latitude: number;
+    longitude: number;
+  }) {
+    router.replace({
+      pathname: '/',
+      params: {
+        ...treeToRouteParams({
+          id: tree.id,
+          commonName: tree.commonName ?? undefined,
+          scientificName: tree.scientificName ?? undefined,
+          precinct: tree.precinct ?? undefined,
+          latitude: String(tree.latitude),
+          longitude: String(tree.longitude),
+        }),
+        autoTrack: Date.now().toString(),
+      },
+    });
+  }
+
+  /*
+   * Once a tree gets selected with autoTrack set
+   * (from trackFromList above), start tracking it
+   * right away and clear the flag so it doesn't
+   * re-fire on later re-renders.
+   */
+  useEffect(() => {
+    if (!selectedTree.autoTrack || !hasSelectedTree) {
+      return;
+    }
+
+    if (tracking) {
+      stopTracking();
+    }
+
+    startTracking();
+
+    router.setParams({ autoTrack: '' });
+  }, [selectedTree.autoTrack]);
 
   /*
    * Find real City of Melbourne trees matching an
@@ -328,6 +377,7 @@ export default function MapScreen() {
           }}
           imageSearchResults={imageSearchResults}
           onClearImageSearch={() => setImageSearchResults(null)}
+          onTrackResult={trackFromList}
         />
       )}
 
