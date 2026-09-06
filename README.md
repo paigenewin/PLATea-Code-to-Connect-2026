@@ -97,7 +97,6 @@ PeTAL:
 
 <!-- Setup and run instructions to be added -->
 
-## 👥 Team
 
 **Team PLATea**
 
