@@ -8,7 +8,7 @@ export const LoadingScreen: React.FC = () => (
       style={styles.flower}
       resizeMode="contain"
     />
-    <Text style={styles.title}>PLUME</Text>
+    <Text style={styles.title}>PeTAL</Text>
     <ActivityIndicator size="small" color="#e85a94" />
     <Text style={styles.loadingText}>Loading trees...</Text>
   </View>

@@ -1,12 +1,15 @@
-## 👥 Team
 
-**Team PLATea** — Code to Connect 2026
+**Team PLATea+(Platypus)**
 
-- Ha Phuong Nguyen
-- Phuong Trang Tran 
-- Ha Linh Nguyen 
+Built for **Code to Connect 2026**.
 
-# 🌸 PeTAL
+Group Member:
+Nam Anh Trinh
+Ha Linh Nguyen
+Ha Phuong Nguyen
+Phuong Trang Tran
+
+# Product name: 🌸 PeTAL
 
 **PeTAL** is a mobile application for discovering trees and flowering plants around Melbourne, developed by **Team PLATea** for **Code to Connect 2026**.
 
@@ -95,11 +98,52 @@ PeTAL:
 
 ## 🚀 Getting Started
 
-<!-- Setup and run instructions to be added -->
+Two projects need to run for the app to fully work: `PLATea/` (the Expo app) and `server/` (the Express backend).
 
+### Prerequisites
 
-**Team PLATea**
+- Node.js installed
+- [Expo Go](https://expo.dev/go) on your phone (App Store / Play Store) — make a free account in it
+- **Everyone's phone and laptop must be on the same private Wi-Fi** (a personal hotspot also works). University/public Wi-Fi and some home Wi-Fi (client isolation / CGNAT) block phone-to-laptop connections.
 
-Built for **Code to Connect 2026**.
+### Install
 
-<!-- Add team member names and GitHub profiles here -->
+```bash
+cd PLATea && npm install
+cd ../server && npm install
+```
+
+### Environment variables
+
+Neither `.env` file is committed to git — create both yourself. Real values are in `TOKENS.md` (not committed — ask a teammate for it).
+
+**`server/.env`**
+```
+GEMINI_API_KEY=<message us to get this key/token>
+PLANTNET_API_KEY=<message us to get this key/token>
+```
+Without these, the app still works — only photo-based plant identification is disabled.
+
+**`PLATea/.env`**
+```
+EXPO_PUBLIC_API_URL=http://YOUR-LAPTOP-LAN-IP:3000
+EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN=<message us to get this key/token>
+```
+Find your LAN IP with `ipconfig` (Windows) or `ipconfig getifaddr en0` (Mac). **This changes every time you switch networks.**
+
+### Run it
+
+```bash
+# terminal 1
+cd server && npm run dev
+
+# terminal 2
+cd PLATea && npm start
+```
+Scan the QR code with your phone's camera (iOS) or Expo Go (Android).
+
+### Troubleshooting
+
+- **"fetch failed" on your phone but not your laptop** — wrong Wi-Fi, or a stale IP in `EXPO_PUBLIC_API_URL`.
+- **`Cannot find native module 'ExpoAsset'`** — update the Expo Go app on your phone to match this project's Expo SDK version.
+- **Camera search fails** — `server/.env` is missing `GEMINI_API_KEY`/`PLANTNET_API_KEY`.
