@@ -9,7 +9,7 @@ Group Member:
 - Ha Phuong Nguyen
 - Phuong Trang Tran
 
-# Product name: 🌸 PeTAL
+🌸 PeTAL
 
 **PeTAL** is a mobile application for discovering trees and flowering plants around Melbourne, developed by **Team PLATea** for **Code to Connect 2026**.
 
