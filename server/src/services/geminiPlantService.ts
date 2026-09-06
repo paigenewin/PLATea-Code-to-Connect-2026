@@ -1,12 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = process.env.GEMINI_API_KEY;
+let ai: GoogleGenAI | null = null;
 
-if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is not configured");
+function getClient(): GoogleGenAI {
+  if (ai) return ai;
+
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not configured");
+  }
+
+  ai = new GoogleGenAI({ apiKey });
+  return ai;
 }
-
-const ai = new GoogleGenAI({ apiKey });
 
 export interface PlantIdentification {
   identified: boolean;
@@ -21,7 +28,7 @@ export async function identifyPlant(
 ): Promise<PlantIdentification> {
   const base64Image = imageBuffer.toString("base64");
 
-  const response = await ai.models.generateContent({
+  const response = await getClient().models.generateContent({
     model: "gemini-flash-latest",
 
     contents: [
