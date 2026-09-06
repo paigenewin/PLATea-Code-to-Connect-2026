@@ -119,6 +119,7 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       router.push({
         pathname: '/tree-details',
         params: {
+          id: tree.id,
           commonName: tree.commonName ?? '',
           scientificName: tree.scientificName ?? '',
           genus: tree.genus ?? '',
