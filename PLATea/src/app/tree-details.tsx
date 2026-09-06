@@ -1,4 +1,6 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
+import { useColorScheme } from 'react-native';
+
 import {
   Pressable,
   ScrollView,
@@ -19,13 +21,45 @@ import {
 
 import { treeToRouteParams } from '@/utils/treeParams';
 
+
 const BLOOM_STATUS_TEXT: Record<BloomStatus, string> = {
-  'blooming': 'Blooming now',
-  'blooming_soon': 'Blooming soon',
-  'not_in_season': 'Not in season',
-  'unknown': 'Status unknown',
+  blooming: 'Blooming now',
+  blooming_soon: 'Blooming soon',
+  not_in_season: 'Not in season',
+  unknown: 'Status unknown',
 };
+
+
 export default function TreeDetailsScreen() {
+
+  // Detect light / dark mode
+  const colorScheme = useColorScheme();
+
+  const isDark = colorScheme === 'dark';
+
+
+  // Colours used depending on device mode
+  const theme = {
+    background: isDark
+      ? '#171512'
+      : '#FFFFFF',
+
+    primaryText: isDark
+      ? '#F7F3EC'
+      : '#2B2925',
+
+    secondaryText: isDark
+      ? '#E6E6E6' : '#414040',
+
+    border: isDark
+      ? '#FFFFFF20'
+      : '#702C2C18',
+
+    communityBackground: isDark
+      ? '#211F1B'
+      : '#EEE7DA',
+  };
+
 
   /*
    * Tree information passed from
@@ -69,50 +103,60 @@ export default function TreeDetailsScreen() {
   const [bloomLoading, setBloomLoading] =
     useState(false);
 
+
   /*
    * Fetch the bloom prediction for this
    * tree's species from the PLATea server.
    */
   useEffect(() => {
-  if (!tree.scientificName) {
-    setBloomStatus(null);
+
+    if (!tree.scientificName) {
+      setBloomStatus(null);
+      setBloomError(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    setBloomLoading(true);
     setBloomError(false);
-    return;
-  }
+    setBloomStatus(null);
 
-  let cancelled = false;
+    fetchBloomPrediction(tree.scientificName)
+      .then((status) => {
 
-  setBloomLoading(true);
-  setBloomError(false);
-  setBloomStatus(null);
+        if (!cancelled) {
+          setBloomStatus(status);
+        }
 
-  fetchBloomPrediction(tree.scientificName)
-    .then((status) => {
-      if (!cancelled) {
-        setBloomStatus(status);
-      }
-    })
-    .catch((error) => {
-      console.error(
-        'Failed to fetch bloom prediction:',
-        error
-      );
+      })
+      .catch((error) => {
 
-      if (!cancelled) {
-        setBloomError(true);
-        setBloomStatus(null);
-      }
-    })
-    .finally(() => {
-      if (!cancelled) {
-        setBloomLoading(false);
-      }
-    });
+        console.error(
+          'Failed to fetch bloom prediction:',
+          error
+        );
 
-  return () => {
-    cancelled = true;
-  };
-}, [tree.scientificName]);
+        if (!cancelled) {
+          setBloomError(true);
+          setBloomStatus(null);
+        }
+
+      })
+      .finally(() => {
+
+        if (!cancelled) {
+          setBloomLoading(false);
+        }
+
+      });
+
+
+    return () => {
+      cancelled = true;
+    };
+
+  }, [tree.scientificName]);
 
 
   /*
@@ -126,7 +170,6 @@ export default function TreeDetailsScreen() {
     if (!tree.latitude || !tree.longitude) {
       return;
     }
-
 
     router.dismissTo({
       pathname: '/',
@@ -148,7 +191,13 @@ export default function TreeDetailsScreen() {
 
   return (
     <ScrollView
-      style={styles.screen}
+      style={[
+        styles.screen,
+        {
+          backgroundColor:
+            theme.background,
+        },
+      ]}
       contentContainerStyle={styles.content}
     >
 
@@ -164,12 +213,28 @@ export default function TreeDetailsScreen() {
 
 
       {/* TREE NAME */}
-      <Text style={styles.commonName}>
+      <Text
+        style={[
+          styles.commonName,
+          {
+            color:
+              theme.primaryText,
+          },
+        ]}
+      >
         {tree.commonName || 'Unknown tree'}
       </Text>
 
 
-      <Text style={styles.scientificName}>
+      <Text
+        style={[
+          styles.scientificName,
+          {
+            color:
+              theme.secondaryText,
+          },
+        ]}
+      >
         {tree.scientificName ||
           'Scientific name unavailable'}
       </Text>
@@ -184,12 +249,12 @@ export default function TreeDetailsScreen() {
 
         <Text style={styles.bloomStatus}>
           {bloomLoading
-          ? 'Fetching prediction...'
-          : bloomError
-            ? "Couldn't load bloom status"
-            : bloomStatus
-              ? BLOOM_STATUS_TEXT[bloomStatus]
-              : 'Status unknown'}
+            ? 'Fetching prediction...'
+            : bloomError
+              ? "Couldn't load bloom status"
+              : bloomStatus
+                ? BLOOM_STATUS_TEXT[bloomStatus]
+                : 'Status unknown'}
         </Text>
 
         <Text style={styles.bloomDescription}>
@@ -215,7 +280,15 @@ export default function TreeDetailsScreen() {
 
 
       {/* TREE INFORMATION */}
-      <Text style={styles.heading}>
+      <Text
+        style={[
+          styles.heading,
+          {
+            color:
+              theme.primaryText,
+          },
+        ]}
+      >
         Tree Information
       </Text>
 
@@ -223,38 +296,38 @@ export default function TreeDetailsScreen() {
       <InfoRow
         label="Genus"
         value={tree.genus}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Family"
         value={tree.family}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Precinct"
         value={tree.precinct}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Location"
         value={tree.locationType}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Date planted"
         value={tree.datePlanted}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Age"
         value={tree.ageDescription}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Diameter"
@@ -263,11 +336,20 @@ export default function TreeDetailsScreen() {
             ? `${tree.dbh} cm`
             : undefined
         }
+        theme={theme}
       />
 
 
       {/* COORDINATES */}
-      <Text style={styles.heading}>
+      <Text
+        style={[
+          styles.heading,
+          {
+            color:
+              theme.primaryText,
+          },
+        ]}
+      >
         Location
       </Text>
 
@@ -275,24 +357,49 @@ export default function TreeDetailsScreen() {
       <InfoRow
         label="Latitude"
         value={tree.latitude}
+        theme={theme}
       />
-
 
       <InfoRow
         label="Longitude"
         value={tree.longitude}
+        theme={theme}
       />
 
 
       {/* COMMUNITY */}
-      <Text style={styles.heading}>
+      <Text
+        style={[
+          styles.heading,
+          {
+            color:
+              theme.primaryText,
+          },
+        ]}
+      >
         Community
       </Text>
 
 
-      <View style={styles.communityCard}>
+      <View
+        style={[
+          styles.communityCard,
+          {
+            backgroundColor:
+              theme.communityBackground,
+          },
+        ]}
+      >
 
-        <Text style={styles.communityText}>
+        <Text
+          style={[
+            styles.communityText,
+            {
+              color:
+                theme.secondaryText,
+            },
+          ]}
+        >
           No community bloom reports yet.
         </Text>
 
@@ -306,29 +413,55 @@ export default function TreeDetailsScreen() {
 /*
  * Reusable row used for displaying
  * information about the tree.
- *
- * Example:
- *
- * Genus       Prunus
- * Family      Rosaceae
  */
 function InfoRow({
   label,
   value,
+  theme,
 }: {
   label: string;
   value?: string;
+
+  theme: {
+    primaryText: string;
+    secondaryText: string;
+    border: string;
+  };
 }) {
 
   return (
-    <View style={styles.infoRow}>
+    <View
+      style={[
+        styles.infoRow,
+        {
+          borderBottomColor:
+            theme.border,
+        },
+      ]}
+    >
 
-      <Text style={styles.infoLabel}>
+      <Text
+        style={[
+          styles.infoLabel,
+          {
+            color:
+              theme.secondaryText,
+          },
+        ]}
+      >
         {label}
       </Text>
 
 
-      <Text style={styles.infoValue}>
+      <Text
+        style={[
+          styles.infoValue,
+          {
+            color:
+              theme.primaryText,
+          },
+        ]}
+      >
         {value || 'Unknown'}
       </Text>
 
@@ -363,7 +496,7 @@ const styles = StyleSheet.create({
 
 
   backButtonText: {
-    color: '#208AEF',
+    color: '#4F7DED',
     fontSize: 15,
     fontWeight: '600',
   },
@@ -383,7 +516,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
     marginTop: 5,
-    opacity: 0.6,
   },
 
 
@@ -392,24 +524,23 @@ const styles = StyleSheet.create({
   // -------------------------
 
   bloomCard: {
-    marginTop: 24,
-    padding: 18,
-    borderRadius: 18,
-    backgroundColor: '#F2F5F1',
+    marginTop: 20,
+    padding: 1,
   },
 
 
   label: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
-    opacity: 0.5,
+    color: '#E35CB6',
   },
 
 
   bloomStatus: {
-    fontSize: 21,
+    fontSize: 23,
     fontWeight: '700',
     marginTop: 6,
+    color: '#E35CA8',
   },
 
 
@@ -417,7 +548,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginTop: 8,
-    opacity: 0.6,
+    color: '#F061B2',
   },
 
 
@@ -426,8 +557,8 @@ const styles = StyleSheet.create({
   // -------------------------
 
   locateButton: {
-    height: 52,
-    backgroundColor: '#208AEF',
+    height: 50,
+    backgroundColor: '#81B963',
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
@@ -436,8 +567,8 @@ const styles = StyleSheet.create({
 
 
   locateButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: '#FFFFFF',
+    fontSize: 17,
     fontWeight: '700',
   },
 
@@ -462,14 +593,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 13,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
   },
 
 
   infoLabel: {
     width: 120,
     fontSize: 15,
-    opacity: 0.55,
   },
 
 
@@ -480,17 +609,19 @@ const styles = StyleSheet.create({
   },
 
 
-  // placeholder community card
+  // -------------------------
+  // COMMUNITY
+  // -------------------------
 
   communityCard: {
-    padding: 18,
-    borderRadius: 14,
-    backgroundColor: '#F5F5F5',
+    paddingVertical: 13,
+    paddingHorizontal: 12,
+    borderRadius: 10,
   },
 
 
   communityText: {
-    opacity: 0.55,
+    fontSize: 15,
   },
 
 });
