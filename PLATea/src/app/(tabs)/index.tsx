@@ -10,6 +10,8 @@ import UserLocationMarker from '@/components/map/userLocationMarker';
 import SelectedTreeCard from '@/components/map/selectedTreeCard';
 import { useTreeTracking } from '@/hooks/useTreeTracking';
 import { useMelbourneTrees } from '@/hooks/useMelbourneTrees';
+import { useBloomingTrees } from '@/hooks/useBloomingTrees';
+import { useBloomingFilter } from '@/hooks/useBloomingFilter';
 import { useSelectedTree } from '@/hooks/useSelectedTree';
 import { treeToRouteParams } from '@/utils/treeParams';
 import { CherryBlossomBorder, FlowerBorderMode } from '@/components/flower-border';
@@ -35,10 +37,22 @@ export default function MapScreen() {
 
   const mapRef = useRef<MapView>(null);
 
-  const { trees, loading } = useMelbourneTrees(
-    MELBOURNE_BOUNDS,
-    1000
-  );
+  const { bloomingOnly } = useBloomingFilter();
+
+  const {
+    trees: allTrees,
+    loading: allTreesLoading,
+  } = useMelbourneTrees(MELBOURNE_BOUNDS, 1000);
+
+  const {
+    trees: bloomingTrees,
+    loading: bloomingTreesLoading,
+  } = useBloomingTrees(bloomingOnly);
+
+  const trees = bloomingOnly ? bloomingTrees : allTrees;
+  const loading = bloomingOnly
+    ? bloomingTreesLoading
+    : allTreesLoading;
 
   const { selectedTree, hasSelectedTree } =
     useSelectedTree({ mapRef, mapReady });

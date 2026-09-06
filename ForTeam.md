@@ -14,3 +14,4 @@
 
 
 download tracking user location: npx expo install expo-location
+## NOTE: need to use private wifi when using the blooming function due to firewall :Đ

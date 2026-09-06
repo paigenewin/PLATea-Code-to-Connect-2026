@@ -23,6 +23,7 @@ import {
 } from '@/services/cityOfMelbourne';
 
 import { fetchBloomingSpecies } from '@/services/bloomApi';
+import { useBloomingFilter } from '@/hooks/useBloomingFilter';
 
 // store what user types and then search the current dataset for the user input
 export default function ExploreScreen() {
@@ -42,6 +43,8 @@ export default function ExploreScreen() {
 
   const [bloomingError, setBloomingError] =
     useState(false);
+
+  const { setBloomingOnly } = useBloomingFilter();
 
   const bloomingScale = useSharedValue(1);
 
@@ -86,6 +89,7 @@ export default function ExploreScreen() {
   async function showBlooming() {
     setQuery('');
     setShowingBlooming(true);
+    setBloomingOnly(true);
     setLoading(true);
     setBloomingError(false);
 
@@ -147,6 +151,7 @@ export default function ExploreScreen() {
         value={query}
         onChangeText={(text) => {
           setShowingBlooming(false);
+          setBloomingOnly(false);
           setQuery(text);
         }}
       />

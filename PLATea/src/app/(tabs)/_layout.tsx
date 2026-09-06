@@ -1,6 +1,11 @@
 import AppTabs from '../../components/app-tabs';
+import { BloomingFilterProvider } from '../../hooks/useBloomingFilter';
 
 export default function TabLayout() {
-  return <AppTabs />;
+  return (
+    <BloomingFilterProvider>
+      <AppTabs />
+    </BloomingFilterProvider>
+  );
 }
 
