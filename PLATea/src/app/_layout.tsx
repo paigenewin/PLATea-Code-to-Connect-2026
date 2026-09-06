@@ -5,7 +5,9 @@ import {
   ThemeProvider,
 } from 'expo-router';
 
+import { Asset } from 'expo-asset';
 import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -15,6 +17,17 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  /*
+   * Warm the image cache for the flower artwork
+   * shown in LoadingScreen, so it doesn't visibly
+   * pop in after the surrounding text later on.
+   */
+  useEffect(() => {
+    Asset.loadAsync(
+      require('../../assets/images/cherryblossom.png')
+    );
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

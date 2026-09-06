@@ -31,7 +31,13 @@ export const explorestyles = StyleSheet.create({
   },
 
   bloomingButtonPressed: {
-    backgroundColor: '#eb0062',
+    backgroundColor: '#ff62ab',
+  },
+
+  bloomingClearButton: {
+    position: 'absolute',
+    right: 12,
+    top: 12,
   },
 
   bloomingButtonText: {

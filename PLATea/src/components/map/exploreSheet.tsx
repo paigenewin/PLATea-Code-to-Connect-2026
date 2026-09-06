@@ -145,6 +145,16 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       }
     }
 
+    /*
+     * Turn off the blooming filter and go back to
+     * seeing all trees, not just the blooming ones.
+     */
+    function clearBlooming() {
+      onBloomingOnlyChange(false);
+      setResults([]);
+      setBloomingError(false);
+    }
+
     function openResult(item: ResultItem) {
       const fromNearbySearch = isNearbyTree(item);
 
@@ -209,7 +219,8 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
                   <Pressable
                     style={({ pressed }) => [
                       explorestyles.bloomingButton,
-                      pressed && explorestyles.bloomingButtonPressed,
+                      (pressed || bloomingOnly) &&
+                        explorestyles.bloomingButtonPressed,
                     ]}
                     onPress={showBlooming}
                     onPressIn={() => {
@@ -234,11 +245,28 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
                         <Text
                           style={[
                             explorestyles.bloomingButtonText,
-                            pressed && explorestyles.bloomingButtonTextPressed,
+                            (pressed || bloomingOnly) &&
+                              explorestyles.bloomingButtonTextPressed,
                           ]}
                         >
-                          Blooming now
+                          {bloomingOnly
+                            ? 'Close blooming trees'
+                            : 'Blooming now'}
                         </Text>
+
+                        {bloomingOnly && (
+                          <Pressable
+                            style={explorestyles.bloomingClearButton}
+                            hitSlop={10}
+                            onPress={clearBlooming}
+                          >
+                            <Ionicons
+                              name="close"
+                              size={18}
+                              color="#fff0f7"
+                            />
+                          </Pressable>
+                        )}
                       </>
                     )}
                   </Pressable>

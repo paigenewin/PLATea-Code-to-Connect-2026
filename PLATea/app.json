@@ -43,7 +43,8 @@
           "cameraPermission": "PLATea uses your camera to identify flowers and trees from a photo.",
           "photosPermission": "PLATea uses your photos to identify flowers and trees from an image."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,
