@@ -3,6 +3,7 @@ import { fetchRecentObservations } from "../services/inaturalistService";
 import { getBloomStatus } from "../services/getBloomStatus";
 import { predictBloom } from "../services/bloomPrediction";
 import { hortFloraProfiles } from "../data/hortFloraProfiles";
+import { findNearbyTrees } from "../services/nearbyTreeService";
 
 const router = Router();
 
@@ -60,6 +61,86 @@ router.get("/:scientificName/prediction", async (req, res) => {
 
     res.status(500).json({
       error: "Failed to get bloom prediction",
+    });
+  }
+});
+
+/*
+ * GET /flowers/:scientificName/nearby
+ *
+ * Returns the nearest City of Melbourne trees
+ * matching the requested species.
+ *
+ * Query parameters:
+ * lat   - user's latitude
+ * lng   - user's longitude
+ * limit - optional number of trees, default 5
+ */
+router.get("/:scientificName/nearby", async (req, res) => {
+  try {
+    const scientificName = req.params.scientificName;
+
+    const lat = Number(req.query.lat);
+    const lng = Number(req.query.lng);
+
+    const requestedLimit =
+      req.query.limit !== undefined
+        ? Number(req.query.limit)
+        : 5;
+
+    if (
+      !Number.isFinite(lat) ||
+      !Number.isFinite(lng)
+    ) {
+      return res.status(400).json({
+        error: "Valid lat and lng are required",
+      });
+    }
+
+    if (
+      lat < -90 ||
+      lat > 90 ||
+      lng < -180 ||
+      lng > 180
+    ) {
+      return res.status(400).json({
+        error: "Invalid latitude or longitude",
+      });
+    }
+
+    if (
+      !Number.isInteger(requestedLimit) ||
+      requestedLimit < 1 ||
+      requestedLimit > 20
+    ) {
+      return res.status(400).json({
+        error: "limit must be an integer between 1 and 20",
+      });
+    }
+
+    const trees = await findNearbyTrees(
+      scientificName,
+      lat,
+      lng,
+      requestedLimit
+    );
+
+    return res.json({
+      scientificName,
+      userLocation: {
+        latitude: lat,
+        longitude: lng,
+      },
+      trees,
+    });
+  } catch (error) {
+    console.error(
+      `Failed to find nearby trees for ${req.params.scientificName}:`,
+      error
+    );
+
+    return res.status(500).json({
+      error: "Failed to find nearby trees",
     });
   }
 });
