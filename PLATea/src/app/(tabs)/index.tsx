@@ -1,17 +1,21 @@
 import { useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Region } from 'react-native-maps';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
+import {styles} from '../../hooks/index';
 
 import { Bounds } from '@/services/cityOfMelbourne';
 import TreeMarkers from '@/components/map/treeMarkers';
 import DestinationMarker from '@/components/map/destinationMarker';
 import UserLocationMarker from '@/components/map/userLocationMarker';
 import SelectedTreeCard from '@/components/map/selectedTreeCard';
+import ExploreSheet from '@/components/map/exploreSheet';
+import SearchBar from '@/components/searchBar';
 import { useTreeTracking } from '@/hooks/useTreeTracking';
 import { useMelbourneTrees } from '@/hooks/useMelbourneTrees';
 import { useBloomingTrees } from '@/hooks/useBloomingTrees';
-import { useBloomingFilter } from '@/hooks/useBloomingFilter';
 import { useSelectedTree } from '@/hooks/useSelectedTree';
 import { treeToRouteParams } from '@/utils/treeParams';
 import { CherryBlossomBorder, FlowerBorderMode } from '@/components/flower-border';
@@ -31,13 +35,19 @@ const INITIAL_REGION: Region = {
   longitudeDelta: 0.05,
 };
 
+const SEARCH_BAR_TOP_MARGIN = 12;
+const SEARCH_BAR_HEIGHT = 52;
+const SEARCH_BAR_BOTTOM_MARGIN = 12;
+
 export default function MapScreen() {
   const [mapReady, setMapReady] = useState(false);
   const [flowerMode] = useState<FlowerBorderMode>('corners');
+  const [query, setQuery] = useState('');
+  const [bloomingOnly, setBloomingOnly] = useState(false);
 
   const mapRef = useRef<MapView>(null);
-
-  const { bloomingOnly } = useBloomingFilter();
+  const sheetRef = useRef<BottomSheet>(null);
+  const insets = useSafeAreaInsets();
 
   const {
     trees: allTrees,
@@ -120,10 +130,30 @@ export default function MapScreen() {
 
       </MapView>
 
+      {/* SEARCH BAR (focus opens the sheet) */}
+      {!hasSelectedTree && (
+        <SearchBar
+          style={[
+            styles.searchBar,
+            { top: insets.top + SEARCH_BAR_TOP_MARGIN },
+          ]}
+          value={query}
+          onChangeText={(text) => {
+            setBloomingOnly(false);
+            setQuery(text);
+          }}
+          onFocus={() => sheetRef.current?.expand()}
+        />
+      )}
+
       <CherryBlossomBorder mode={flowerMode} />
 
-      {/* SELECTED TREE POPUP */}
-      {hasSelectedTree && (
+      {/*
+       * A selected tree's popup takes over the
+       * bottom of the screen instead of the
+       * search sheet, so they don't collide.
+       */}
+      {hasSelectedTree ? (
         <SelectedTreeCard
           tree={selectedTree}
           distance={distance}
@@ -139,18 +169,26 @@ export default function MapScreen() {
             backToTreeDetails
           }
         />
+      ) : (
+        <ExploreSheet
+          ref={sheetRef}
+          query={query}
+          bloomingOnly={bloomingOnly}
+          topInset={
+            insets.top +
+            SEARCH_BAR_TOP_MARGIN +
+            SEARCH_BAR_HEIGHT +
+            SEARCH_BAR_BOTTOM_MARGIN
+          }
+          onBloomingOnlyChange={(value) => {
+            setBloomingOnly(value);
+            if (value) {
+              setQuery('');
+            }
+          }}
+        />
       )}
 
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  map: {
-    flex: 1,
-  },
-});

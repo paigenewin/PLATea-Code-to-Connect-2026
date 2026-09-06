@@ -48,14 +48,14 @@ export default function TreeDetailsScreen() {
 
 
   /*
-   * Go back to the user's
-   * previous Search screen.
+   * Go back to the Explore screen
+   * (the map with the search sheet).
    */
   function backToSearch() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace('/explore');
+      router.replace('/');
     }
   }
 

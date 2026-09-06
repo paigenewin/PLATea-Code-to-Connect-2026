@@ -26,6 +26,7 @@ import {
 
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 
@@ -35,31 +36,33 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider
-      value={
-        colorScheme === 'dark'
-          ? DarkTheme
-          : DefaultTheme
-      }
-    >
-      <AnimatedSplashOverlay />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider
+        value={
+          colorScheme === 'dark'
+            ? DarkTheme
+            : DefaultTheme
+        }
+      >
+        <AnimatedSplashOverlay />
 
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            title: 'Back',
-          }}
-        />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              title: 'Back',
+            }}
+          />
 
-        <Stack.Screen
-          name="tree-details"
-          options={{
-            title: 'Tree Details',
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
+          <Stack.Screen
+            name="tree-details"
+            options={{
+              title: 'Tree Details',
+            }}
+          />
+        </Stack>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
