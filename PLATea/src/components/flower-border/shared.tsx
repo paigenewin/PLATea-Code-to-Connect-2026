@@ -59,13 +59,13 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 20,
   },
-  topRightCorner: {
+  topLeftCorner: {
     top: 0,
-    right: 0,
-  },
-  bottomLeftCorner: {
-    bottom: 0,
     left: 0,
+  },
+  bottomRightCorner: {
+    bottom: 0,
+    right: 0,
   },
   cluster: {
     position: 'absolute',
@@ -73,28 +73,35 @@ export const styles = StyleSheet.create({
     height: 200,
     zIndex: 10,
   },
-  topRightCluster: {
-    top: -46,
-    right: -40,
-  },
-  bottomLeftCluster: {
-    bottom: -40,
+  /*
+   * The three inner flowers below are always
+   * anchored from the cluster box's right edge.
+   * A cluster on the screen's left side needs a
+   * 180deg spin to still hug that corner; one on
+   * the right side already faces the right way.
+   */
+  topLeftCluster: {
+    top: -40,
     left: -40,
     transform: [{ rotate: '180deg' }],
   },
+  bottomRightCluster: {
+    bottom: -40,
+    right: -40,
+  },
   clusterFlowerOne: {
     position: 'absolute',
-    top: 30,
+    top: 120,
     right: 120,
   },
   clusterFlowerTwo: {
     position: 'absolute',
-    top: 30,
-    right: 100,
+    top: 40,
+    right: 20,
   },
   clusterFlowerThree: {
     position: 'absolute',
-    top: 130,
+    top: 150,
     right: 0,
   },
 });

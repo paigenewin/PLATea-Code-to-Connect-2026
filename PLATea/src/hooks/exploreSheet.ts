@@ -1,5 +1,13 @@
 import { StyleSheet } from 'react-native';
 export const explorestyles = StyleSheet.create({
+
+
+  sheetBackground: {
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+
   handle: {
     backgroundColor: '#f5a3c9',
     width: 40,
@@ -59,6 +67,20 @@ export const explorestyles = StyleSheet.create({
     borderBottomColor: '#eeeeee',
   },
 
+  resultRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  resultText: {
+    flex: 1,
+  },
+
+  trackButton: {
+    padding: 8,
+    marginLeft: 8,
+  },
+
   commonName: {
     fontSize: 18,
     fontWeight: '600',
@@ -74,5 +96,31 @@ export const explorestyles = StyleSheet.create({
     fontSize: 13,
     marginTop: 4,
     opacity: 0.6,
+  },
+
+  resultNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  nearestBadge: {
+    backgroundColor: '#ffd9ea',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+
+  nearestBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#c2116c',
+  },
+
+  clearImageSearch: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#e43c8a',
+    marginBottom: 12,
   },
 });

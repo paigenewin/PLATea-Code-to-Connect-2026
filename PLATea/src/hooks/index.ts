@@ -16,8 +16,10 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     left: 16,
     right: 16,
+    zIndex: 30,
 
     backgroundColor: 'white',
+    borderRadius: 14,
 
     shadowColor: '#000',
     shadowOpacity: 0.15,
@@ -26,6 +28,6 @@ export const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    elevation: 5,
+    elevation: 30,
   },
 });

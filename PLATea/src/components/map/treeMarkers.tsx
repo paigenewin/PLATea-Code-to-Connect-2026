@@ -5,10 +5,12 @@ import { Tree } from '@/services/cityOfMelbourne';
 
 type Props = {
   trees: Tree[];
+  onSelectTree: (tree: Tree) => void;
 };
 
 export default function TreeMarkers({
   trees,
+  onSelectTree,
 }: Props) {
   return (
     <>
@@ -20,14 +22,7 @@ export default function TreeMarkers({
             longitude: tree.longitude,
           }}
           anchor={{ x: 0.5, y: 1 }}
-          title={
-            tree.commonName ??
-            'Unknown tree'
-          }
-          description={
-            tree.scientificName ??
-            undefined
-          }
+          onPress={() => onSelectTree(tree)}
         >
           <Image
             source={require('../../../assets/images/location_pin_lightmode.png')}

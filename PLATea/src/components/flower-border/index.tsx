@@ -35,6 +35,6 @@ export const CherryBlossomBorder: React.FC<FlowerBorderProps> = ({ mode = 'lots'
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFill,
-    zIndex: 10,
+    zIndex: 1,
   },
 });
