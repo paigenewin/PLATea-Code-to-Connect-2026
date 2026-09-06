@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import {styles} from '../../hooks/index';
 
-import { Bounds } from '@/services/cityOfMelbourne';
+import { Bounds, Tree } from '@/services/cityOfMelbourne';
 import TreeMarkers from '@/components/map/treeMarkers';
 import DestinationMarker from '@/components/map/destinationMarker';
 import UserLocationMarker from '@/components/map/userLocationMarker';
@@ -121,6 +121,31 @@ export default function MapScreen() {
     }
 
     router.replace('/');
+  }
+
+  /*
+   * Select a tree by tapping its pin on the map,
+   * which pops up its SelectedTreeCard (Track /
+   * Tree Details buttons) at the bottom.
+   */
+  function selectTree(tree: Tree) {
+    router.replace({
+      pathname: '/',
+      params: {
+        id: tree.id,
+        commonName: tree.commonName ?? '',
+        scientificName: tree.scientificName ?? '',
+        genus: tree.genus ?? '',
+        family: tree.family ?? '',
+        precinct: tree.precinct ?? '',
+        locationType: tree.locationType ?? '',
+        datePlanted: tree.datePlanted ?? '',
+        ageDescription: tree.ageDescription ?? '',
+        dbh: tree.dbh?.toString() ?? '',
+        latitude: tree.latitude.toString(),
+        longitude: tree.longitude.toString(),
+      },
+    });
   }
 
   /*
@@ -290,7 +315,7 @@ export default function MapScreen() {
         <RouteFinding coordinates={routeCoords} />
 
         {/* NORMAL MELBOURNE TREE MARKERS */}
-        <TreeMarkers trees={trees} />
+        <TreeMarkers trees={trees} onSelectTree={selectTree} />
 
         {/* SELECTED TREE MARKER (destination) */}
         {hasSelectedTree && (
