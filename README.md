@@ -1,9 +1,8 @@
-
-**Team PLATea+(Platypus)**
+# Team PLATea+(Platypus)
 
 Built for **Code to Connect 2026**.
 
-Group Member:
+Group Members:
 - Ha Linh Nguyen (linhhanguyen2110@gmail.com)
 - Ha Phuong Nguyen (paigenewin1809@gmail.com)
 - Phuong Trang Tran (phuongtrangt673@gmail.com)
@@ -115,7 +114,7 @@ cd ../server && npm install
 
 ### Environment variables
 
-Note: The .env file (containing API keys) is not committed to this repository for security reasons. Judges can find it in our Devpost submission under additional files `TOKENS.md` , or reach out to a team member directly.
+Note: The .env file (containing API keys) is not committed to this repository for security reasons. Judges can find it in our Devpost submission under additional info `TOKENS.md`, or reach out to a team member directly.
 
 **`server/.env`**
 ```
@@ -145,5 +144,5 @@ Scan the QR code with your phone's camera (iOS) or Expo Go (Android).
 ### Troubleshooting
 
 - **"fetch failed" on your phone but not your laptop** — wrong Wi-Fi, or a stale IP in `EXPO_PUBLIC_API_URL`.
-- **`Cannot find native module 'ExpoAsset'`** — update the Expo Go app on your phone to match this project's Expo SDK version.
+- **` Cannot find native module 'ExpoAsset'`** — update the Expo Go app on your phone to match this project's Expo SDK version.
 - **Camera search fails** — `server/.env` is missing `GEMINI_API_KEY`/`PLANTNET_API_KEY`.
