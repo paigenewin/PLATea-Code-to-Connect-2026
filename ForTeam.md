@@ -4,7 +4,7 @@
 4. Press enter to get the latest SDK
 5. Enter again if it said Your Project is ready
 
-6. PLS cd ../server run npm install  and npm dev build before cd PLATea
+6. PLS cd ../server and then run "npm install"  and "npm dev build" before "cd PLATea"
 
 7. Run cd PLATea in terminal
 8. Run npm run web in terminal
