@@ -5,6 +5,7 @@ import {
   View,
 } from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
 import { formatDistance } from '@/utils/distance';
 
 type SelectedTree = {
@@ -18,6 +19,8 @@ type Props = {
   tracking: boolean;
   onTrackPress: () => void;
   onDetailsPress: () => void;
+  onClose: () => void;
+
 };
 
 export default function SelectedTreeCard({
@@ -26,16 +29,19 @@ export default function SelectedTreeCard({
   tracking,
   onTrackPress,
   onDetailsPress,
+  onClose,
 }: Props) {
   return (
     <View style={styles.card}>
-      <View style={styles.topRow}>
+      <Pressable style={styles.closeButton} onPress={onClose}>
+        <Ionicons name="close" size={22} color="#666" />
+      </Pressable>
+
+      <View style={styles.header}>
         <View style={styles.treeInfo}>
           <Text style={styles.name}>
-            {tree.commonName ||
-              'Unknown tree'}
+            {tree.commonName || 'Unknown tree'}
           </Text>
-
           <Text style={styles.scientific}>
             {tree.scientificName}
           </Text>
@@ -108,9 +114,18 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  topRow: {
+  closeButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
+    padding: 4,
+  },
+
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingRight: 28,
   },
 
   treeInfo: {

@@ -21,6 +21,9 @@ import { treeToRouteParams } from '@/utils/treeParams';
 import { CherryBlossomBorder, FlowerBorderMode } from '@/components/flower-border';
 import { LoadingScreen } from '@/components/loading-screen';
 
+import RouteFinding from '@/components/map/routeFinding';
+import { useWalkingRoute } from '@/hooks/routeFinding';
+
 const MELBOURNE_BOUNDS: Bounds = {
   minLat: -37.97,
   maxLat: -37.7,
@@ -80,6 +83,17 @@ export default function MapScreen() {
     treeLongitude: selectedTree.longitude,
   });
 
+  const { routeCoords } = useWalkingRoute({
+    origin: userLocation,
+    destination: hasSelectedTree
+      ? {
+          latitude: Number(selectedTree.latitude),
+          longitude: Number(selectedTree.longitude),
+        }
+      : null,
+    active: tracking,
+  });
+
   /*
    * Return from Map to Tree Details.
    */
@@ -88,6 +102,18 @@ export default function MapScreen() {
       pathname: '/tree-details',
       params: treeToRouteParams(selectedTree),
     });
+  }
+
+  /*
+   * Deselect the current tree and clear
+   * its params from the route.
+   */
+  function closeSelectedTree() {
+    if (tracking) {
+      stopTracking();
+    }
+
+    router.replace('/');
   }
 
   return (
@@ -106,6 +132,9 @@ export default function MapScreen() {
           setMapReady(true)
         }
       >
+
+        {/* WALKING ROUTE TO SELECTED TREE */}
+        <RouteFinding coordinates={routeCoords} />
 
         {/* NORMAL MELBOURNE TREE MARKERS */}
         <TreeMarkers trees={trees} />
@@ -167,6 +196,10 @@ export default function MapScreen() {
 
           onDetailsPress={
             backToTreeDetails
+          }
+
+          onClose={
+            closeSelectedTree
           }
         />
       ) : (
