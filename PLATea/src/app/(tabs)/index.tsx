@@ -337,6 +337,8 @@ export default function MapScreen() {
 
       </MapView>
 
+      <CherryBlossomBorder mode={flowerMode} />
+
       {/* SEARCH BAR (focus opens the sheet) */}
       {!hasSelectedTree && (
         <SearchBar
@@ -354,8 +356,6 @@ export default function MapScreen() {
           onCameraPress={searchByImage}
         />
       )}
-
-      <CherryBlossomBorder mode={flowerMode} />
 
       {/*
        * A selected tree's popup takes over the

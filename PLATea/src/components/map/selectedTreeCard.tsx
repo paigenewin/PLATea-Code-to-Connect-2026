@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
     bottom: 92,
+    zIndex: 30,
 
     backgroundColor: 'white',
 

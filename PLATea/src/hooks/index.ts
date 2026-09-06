@@ -16,6 +16,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     left: 16,
     right: 16,
+    zIndex: 30,
 
     backgroundColor: 'white',
     borderRadius: 14,
@@ -27,6 +28,6 @@ export const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    elevation: 5,
+    elevation: 30,
   },
 });

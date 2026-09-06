@@ -178,6 +178,7 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
         topInset={topInset}
         enableOverDrag={false}
         enablePanDownToClose={false}
+        backgroundStyle={explorestyles.sheetBackground}
         handleIndicatorStyle={explorestyles.handle}
       >
         <BottomSheetFlatList

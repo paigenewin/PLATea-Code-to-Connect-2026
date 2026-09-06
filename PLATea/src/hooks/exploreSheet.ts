@@ -1,5 +1,13 @@
 import { StyleSheet } from 'react-native';
 export const explorestyles = StyleSheet.create({
+
+
+  sheetBackground: {
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+
   handle: {
     backgroundColor: '#f5a3c9',
     width: 40,
