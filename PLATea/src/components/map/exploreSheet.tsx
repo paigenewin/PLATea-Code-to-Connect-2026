@@ -18,12 +18,8 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { explorestyles } from '../../hooks/exploreSheet';
 
-import {
-  searchMelbourneTrees,
-  searchTreesBySpecies,
-  Tree,
-} from '@/services/cityOfMelbourne';
-import { fetchBloomingSpecies, NearbyTree } from '@/services/bloomApi';
+import { searchMelbourneTrees, Tree } from '@/services/cityOfMelbourne';
+import { fetchBloomingTrees, NearbyTree } from '@/services/bloomApi';
 import { formatDistance } from '@/utils/distance';
 
 type ResultItem = Tree | NearbyTree;
@@ -122,14 +118,7 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       setBloomingError(false);
 
       try {
-        const blooming = await fetchBloomingSpecies();
-
-        const scientificNames = blooming.flatMap(
-          (species) => species.scientificNames
-        );
-
-        const trees =
-          await searchTreesBySpecies(scientificNames);
+        const { trees } = await fetchBloomingTrees();
 
         setResults(trees);
       } catch (error) {

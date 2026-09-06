@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { fetchBloomingSpecies } from '@/services/bloomApi';
-import { searchTreesBySpecies, Tree } from '@/services/cityOfMelbourne';
+import { fetchBloomingTrees } from '@/services/bloomApi';
+import { Tree } from '@/services/cityOfMelbourne';
 
 /*
  * Fetches trees matching whichever species are
@@ -23,14 +23,7 @@ export function useBloomingTrees(enabled: boolean) {
       setLoading(true);
 
       try {
-        const blooming = await fetchBloomingSpecies();
-
-        const scientificNames = blooming.flatMap(
-          (species) => species.scientificNames
-        );
-
-        const results =
-          await searchTreesBySpecies(scientificNames);
+        const { trees: results } = await fetchBloomingTrees();
 
         if (!cancelled) {
           setTrees(results);

@@ -4,8 +4,21 @@ import { getBloomStatus } from "../services/getBloomStatus";
 import { predictBloom } from "../services/bloomPrediction";
 import { hortFloraProfiles } from "../data/hortFloraProfiles";
 import { findNearbyTrees } from "../services/nearbyTreeService";
+import { findTreesBySpecies } from "../services/bloomingTreeService";
 
 const router = Router();
+
+function getBloomingSpecies() {
+  return hortFloraProfiles
+    .filter(
+      (profile) =>
+        predictBloom(profile).status === "blooming"
+    )
+    .map((profile) => ({
+      displayName: profile.displayName,
+      scientificNames: profile.scientificNames,
+    }));
+}
 
 /*
  * GET /flowers/blooming
@@ -18,17 +31,39 @@ const router = Router();
  * it's instant.
  */
 router.get("/blooming", (_req, res) => {
-  const blooming = hortFloraProfiles
-    .filter(
-      (profile) =>
-        predictBloom(profile).status === "blooming"
-    )
-    .map((profile) => ({
-      displayName: profile.displayName,
-      scientificNames: profile.scientificNames,
-    }));
+  res.json({ species: getBloomingSpecies() });
+});
 
-  res.json({ species: blooming });
+/*
+ * GET /flowers/blooming/trees
+ *
+ * Same blooming species as above, but also looks
+ * up every real City of Melbourne tree matching
+ * them, fully paginated. Lets the client make one
+ * request instead of calling the City of Melbourne
+ * API directly itself.
+ */
+router.get("/blooming/trees", async (_req, res) => {
+  try {
+    const species = getBloomingSpecies();
+
+    const scientificNames = species.flatMap(
+      (profile) => profile.scientificNames
+    );
+
+    const trees = await findTreesBySpecies(scientificNames);
+
+    res.json({ species, trees });
+  } catch (error) {
+    console.error(
+      "Failed to load blooming trees:",
+      error
+    );
+
+    res.status(500).json({
+      error: "Failed to load blooming trees",
+    });
+  }
 });
 
 /*
