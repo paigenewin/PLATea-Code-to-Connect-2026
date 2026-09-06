@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Region } from 'react-native-maps';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 import {styles} from '../../hooks/index';
 
 import { Bounds } from '@/services/cityOfMelbourne';
@@ -20,6 +22,8 @@ import { useSelectedTree } from '@/hooks/useSelectedTree';
 import { treeToRouteParams } from '@/utils/treeParams';
 import { CherryBlossomBorder, FlowerBorderMode } from '@/components/flower-border';
 import { LoadingScreen } from '@/components/loading-screen';
+import { identifyPlantPhoto } from '@/services/identifyApi';
+import { fetchNearbyTrees, NearbyTree } from '@/services/bloomApi';
 
 import RouteFinding from '@/components/map/routeFinding';
 import { useWalkingRoute } from '@/hooks/routeFinding';
@@ -47,6 +51,7 @@ export default function MapScreen() {
   const [flowerMode] = useState<FlowerBorderMode>('corners');
   const [query, setQuery] = useState('');
   const [bloomingOnly, setBloomingOnly] = useState(false);
+  const [identifying, setIdentifying] = useState(false);
 
   const mapRef = useRef<MapView>(null);
   const sheetRef = useRef<BottomSheet>(null);
@@ -116,11 +121,105 @@ export default function MapScreen() {
     router.replace('/');
   }
 
+  /*
+   * Find the closest real City of Melbourne tree
+   * matching an identified species, so the photo
+   * search can locate it. Best-effort - returns
+   * null if location isn't available or nothing
+   * nearby matches.
+   */
+  async function findNearestMatch(
+    scientificName: string
+  ): Promise<NearbyTree | null> {
+    const permission =
+      await Location.requestForegroundPermissionsAsync();
+
+    if (!permission.granted) {
+      return null;
+    }
+
+    const position = await Location.getCurrentPositionAsync();
+
+    const trees = await fetchNearbyTrees(
+      scientificName,
+      position.coords.latitude,
+      position.coords.longitude
+    ).catch(() => []);
+
+    return trees[0] ?? null;
+  }
+
+  /*
+   * Take a photo, send it to PLATea's identify
+   * endpoint, and jump to Tree Details for
+   * whatever species comes back.
+   */
+  async function searchByImage() {
+    const permission =
+      await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert(
+        'Camera access needed',
+        'PLATea needs camera access to identify a flower from a photo.'
+      );
+      return;
+    }
+
+    const photo = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      quality: 0.7,
+    });
+
+    if (photo.canceled || !photo.assets[0]) {
+      return;
+    }
+
+    setIdentifying(true);
+
+    try {
+      const result = await identifyPlantPhoto(photo.assets[0].uri);
+
+      if (!result.identified || !result.scientificName) {
+        Alert.alert(
+          'Couldn\'t identify that',
+          'Try a clearer, closer photo of the flower or leaves.'
+        );
+        return;
+      }
+
+      const nearestTree = await findNearestMatch(
+        result.scientificName
+      );
+
+      router.push({
+        pathname: '/tree-details',
+        params: treeToRouteParams({
+          id: nearestTree?.id,
+          commonName: nearestTree?.commonName ?? result.commonName ?? undefined,
+          scientificName: result.scientificName,
+          precinct: nearestTree?.precinct ?? undefined,
+          latitude: nearestTree ? String(nearestTree.latitude) : undefined,
+          longitude: nearestTree ? String(nearestTree.longitude) : undefined,
+        }),
+      });
+    } catch (error) {
+      console.error('Image search failed:', error);
+
+      Alert.alert(
+        'Something went wrong',
+        'Could not identify that photo. Check your connection and try again.'
+      );
+    } finally {
+      setIdentifying(false);
+    }
+  }
+
   return (
     <View style={styles.container}>
 
       {/* LOADING */}
-      {loading && <LoadingScreen />}
+      {(loading || identifying) && <LoadingScreen />}
 
       {/* MAP */}
       <MapView
@@ -162,7 +261,7 @@ export default function MapScreen() {
       {/* SEARCH BAR (focus opens the sheet) */}
       {!hasSelectedTree && (
         <SearchBar
-          style={[
+          containerStyle={[
             styles.searchBar,
             { top: insets.top + SEARCH_BAR_TOP_MARGIN },
           ]}
@@ -172,6 +271,7 @@ export default function MapScreen() {
             setQuery(text);
           }}
           onFocus={() => sheetRef.current?.expand()}
+          onCameraPress={searchByImage}
         />
       )}
 

@@ -42,3 +42,39 @@ export async function fetchBloomingSpecies(): Promise<BloomingSpecies[]> {
   const data = await response.json();
   return data.species as BloomingSpecies[];
 }
+
+export type NearbyTree = {
+  id: string;
+  commonName: string | null;
+  scientificName: string | null;
+  latitude: number;
+  longitude: number;
+  precinct: string | null;
+  distanceMetres: number;
+};
+
+export async function fetchNearbyTrees(
+  scientificName: string,
+  lat: number,
+  lng: number,
+  limit = 5
+): Promise<NearbyTree[]> {
+  const params = new URLSearchParams({
+    lat: String(lat),
+    lng: String(lng),
+    limit: String(limit),
+  });
+
+  const response = await fetch(
+    `${API_URL}/flowers/${encodeURIComponent(scientificName)}/nearby?${params.toString()}`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Nearby tree request failed with status ${response.status}`
+    );
+  }
+
+  const data = await response.json();
+  return data.trees as NearbyTree[];
+}

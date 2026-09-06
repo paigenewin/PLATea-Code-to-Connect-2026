@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     right: 16,
 
     backgroundColor: 'white',
+    borderRadius: 14,
 
     shadowColor: '#000',
     shadowOpacity: 0.15,
