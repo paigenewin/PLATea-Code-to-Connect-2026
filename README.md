@@ -115,7 +115,7 @@ cd ../server && npm install
 
 ### Environment variables
 
-Neither `.env` file is committed to git — create both yourself. Real values are in `TOKENS.md` (not committed — ask a teammate for it).
+Note: The .env file (containing API keys) is not committed to this repository for security reasons. Judges can find it in our Devpost submission under additional files `TOKENS.md` , or reach out to a team member directly.
 
 **`server/.env`**
 ```
