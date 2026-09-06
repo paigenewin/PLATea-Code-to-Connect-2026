@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-
+import {styles} from '../../hooks/explore';
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   Pressable,
-  StyleSheet,
   Text,
   TextInput,
   View,
@@ -13,8 +13,11 @@ import {
 
 import {
   searchMelbourneTrees,
+  searchTreesBySpecies,
   Tree,
 } from '@/services/cityOfMelbourne';
+
+import { fetchBloomingSpecies } from '@/services/bloomApi';
 
 // store what user types and then search the current dataset for the user input
 export default function ExploreScreen() {
@@ -26,8 +29,23 @@ export default function ExploreScreen() {
   const [loading, setLoading] =
     useState(false);
 
+  // when true, results are showing
+  // currently-blooming trees instead
+  // of a text search
+  const [showingBlooming, setShowingBlooming] =
+    useState(false);
+
+  const [bloomingError, setBloomingError] =
+    useState(false);
+
 
   useEffect(() => {
+    // Text search takes over
+    // from the blooming filter
+    if (showingBlooming) {
+      return;
+    }
+
     // If less than 2 letters,
     // don't search yet
     if (query.trim().length < 2) {
@@ -52,7 +70,37 @@ export default function ExploreScreen() {
     // continues typing
     return () => clearTimeout(timer);
 
-  }, [query]);
+  }, [query, showingBlooming]);
+
+  async function showBlooming() {
+    setQuery('');
+    setShowingBlooming(true);
+    setLoading(true);
+    setBloomingError(false);
+
+    try {
+      const blooming = await fetchBloomingSpecies();
+
+      const scientificNames = blooming.flatMap(
+        (species) => species.scientificNames
+      );
+
+      const trees =
+        await searchTreesBySpecies(scientificNames);
+
+      setResults(trees);
+    } catch (error) {
+      console.error(
+        'Failed to load blooming trees:',
+        error
+      );
+
+      setResults([]);
+      setBloomingError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function openTree(tree: Tree) {
     router.push({
@@ -86,13 +134,50 @@ export default function ExploreScreen() {
         style={styles.searchInput}
         placeholder="Search flower name..."
         value={query}
-        onChangeText={setQuery}
+        onChangeText={(text) => {
+          setShowingBlooming(false);
+          setQuery(text);
+        }}
       />
+
+      <Pressable
+        style={[
+          styles.bloomingButton,
+          showingBlooming && styles.bloomingButtonActive,
+        ]}
+        onPress={showBlooming}
+      >
+        <Image 
+          source = { require('../../../assets/images/cherryblossom.png') } 
+          style={{ width: 20, height: 20, marginRight: 8 }} />
+        <Text
+          style={[
+            styles.bloomingButtonText,
+            showingBlooming && styles.bloomingButtonTextActive,
+          ]}
+        >
+          Blooming now
+        </Text>
+      </Pressable>
+
+
+      {!loading && showingBlooming && bloomingError && (
+        <Text style={styles.emptyState}>
+          Couldn't reach the server. Check your connection and try again.
+        </Text>
+      )}
+
+      {!loading && showingBlooming && !bloomingError && results.length === 0 && (
+        <Text style={styles.emptyState}>
+          Nothing curated as blooming right now.
+        </Text>
+      )}
 
 
       {loading && (
         <ActivityIndicator
-          size="large"
+          size="small"
+          color="#db92b1"
           style={styles.loading}
         />
       )}
@@ -138,54 +223,3 @@ export default function ExploreScreen() {
   );
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-  },
-
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: 16,
-  },
-
-  searchInput: {
-    height: 52,
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    marginBottom: 12,
-  },
-
-  loading: {
-    marginTop: 20,
-  },
-
-  result: {
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eeeeee',
-  },
-
-  commonName: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-
-  scientificName: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    marginTop: 3,
-  },
-
-  precinct: {
-    fontSize: 13,
-    marginTop: 4,
-    opacity: 0.6,
-  },
-});

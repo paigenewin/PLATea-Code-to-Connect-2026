@@ -203,3 +203,76 @@ export async function searchMelbourneTrees(
   }
 }
 
+// finds trees matching any of the given scientific names (e.g. currently-blooming species)
+export async function searchTreesBySpecies(
+  scientificNames: string[],
+  limit: number = 100
+): Promise<Tree[]> {
+  if (scientificNames.length === 0) {
+    return [];
+  }
+
+  const whereClause = scientificNames
+    .map((name) => {
+      const safeName = name.replace(/"/g, '\\"');
+      return `search(scientific_name, "${safeName}")`;
+    })
+    .join(' OR ');
+
+  const url =
+    `${BASE_URL}?where=${encodeURIComponent(whereClause)}` +
+    `&limit=${limit}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+
+      console.error(
+        'Melbourne species search API error:',
+        errorBody
+      );
+
+      throw new Error(
+        `Melbourne species search API error: ${response.status}`
+      );
+    }
+
+    const data: MelbourneApiResponse =
+      await response.json();
+
+    const records =
+      Array.isArray(data.records)
+        ? data.records
+        : [];
+
+    return records.map((entry) => {
+      const fields = entry.record.fields;
+
+      return {
+        id: fields.com_id,
+        commonName: fields.common_name,
+        scientificName: fields.scientific_name,
+        genus: fields.genus,
+        family: fields.family,
+        dbh: fields.diameter_breast_height,
+        datePlanted: fields.date_planted,
+        ageDescription: fields.age_description,
+        precinct: fields.precinct,
+        locationType: fields.located_in,
+        latitude: fields.latitude,
+        longitude: fields.longitude,
+        council: 'melbourne' as const,
+      };
+    });
+  } catch (error) {
+    console.error(
+      'Failed to search Melbourne trees by species:',
+      error
+    );
+
+    return [];
+  }
+}
+

@@ -24,3 +24,21 @@ export async function fetchBloomPrediction(
   const data = await response.json();
   return data.status as BloomStatus;
 }
+
+export type BloomingSpecies = {
+  displayName: string;
+  scientificNames: string[];
+};
+
+export async function fetchBloomingSpecies(): Promise<BloomingSpecies[]> {
+  const response = await fetch(`${API_URL}/flowers/blooming`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Blooming species request failed with status ${response.status}`
+    );
+  }
+
+  const data = await response.json();
+  return data.species as BloomingSpecies[];
+}

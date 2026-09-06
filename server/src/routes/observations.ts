@@ -1,8 +1,34 @@
 import { Router } from "express";
 import { fetchRecentObservations } from "../services/inaturalistService";
 import { getBloomStatus } from "../services/getBloomStatus";
+import { predictBloom } from "../services/bloomPrediction";
+import { hortFloraProfiles } from "../data/hortFloraProfiles";
 
 const router = Router();
+
+/*
+ * GET /flowers/blooming
+ *
+ * Returns the curated HortFlora species that
+ * are predicted to be blooming right now.
+ *
+ * Only covers manually-verified species -
+ * doesn't touch VicFlora or iNaturalist, so
+ * it's instant.
+ */
+router.get("/blooming", (_req, res) => {
+  const blooming = hortFloraProfiles
+    .filter(
+      (profile) =>
+        predictBloom(profile).status === "blooming"
+    )
+    .map((profile) => ({
+      displayName: profile.displayName,
+      scientificNames: profile.scientificNames,
+    }));
+
+  res.json({ species: blooming });
+});
 
 /*
  * GET /flowers/:scientificName/prediction
