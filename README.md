@@ -4,10 +4,10 @@
 Built for **Code to Connect 2026**.
 
 Group Member:
+- Ha Linh Nguyen (linhhanguyen2110@gmail.com)
+- Ha Phuong Nguyen (paigenewin1809@gmail.com)
+- Phuong Trang Tran (phuongtrangt673@gmail.com)
 - Nam Anh Trinh
-- Ha Linh Nguyen
-- Ha Phuong Nguyen
-- Phuong Trang Tran
 
 🌸 PeTAL
 
