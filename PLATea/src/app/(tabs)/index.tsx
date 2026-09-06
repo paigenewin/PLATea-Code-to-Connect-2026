@@ -52,6 +52,8 @@ export default function MapScreen() {
   const [query, setQuery] = useState('');
   const [bloomingOnly, setBloomingOnly] = useState(false);
   const [identifying, setIdentifying] = useState(false);
+  const [imageSearchResults, setImageSearchResults] =
+    useState<NearbyTree[] | null>(null);
 
   const mapRef = useRef<MapView>(null);
   const sheetRef = useRef<BottomSheet>(null);
@@ -122,31 +124,32 @@ export default function MapScreen() {
   }
 
   /*
-   * Find the closest real City of Melbourne tree
-   * matching an identified species, so the photo
-   * search can locate it. Best-effort - returns
-   * null if location isn't available or nothing
+   * Find real City of Melbourne trees matching an
+   * identified species, nearest first, so the photo
+   * search can show and locate them. Best-effort -
+   * returns [] if location isn't available or nothing
    * nearby matches.
    */
-  async function findNearestMatch(
+  async function findNearbyMatches(
     scientificName: string
-  ): Promise<NearbyTree | null> {
+  ): Promise<NearbyTree[]> {
     const permission =
       await Location.requestForegroundPermissionsAsync();
 
     if (!permission.granted) {
-      return null;
+      return [];
     }
 
-    const position = await Location.getCurrentPositionAsync();
+    const position =
+      (await Location.getLastKnownPositionAsync()) ??
+      (await Location.getCurrentPositionAsync());
 
-    const trees = await fetchNearbyTrees(
+    return fetchNearbyTrees(
       scientificName,
       position.coords.latitude,
-      position.coords.longitude
+      position.coords.longitude,
+      8
     ).catch(() => []);
-
-    return trees[0] ?? null;
   }
 
   /*
@@ -188,19 +191,21 @@ export default function MapScreen() {
         return;
       }
 
-      const nearestTree = await findNearestMatch(
+      const nearbyMatches = await findNearbyMatches(
         result.scientificName
       );
+
+      if (nearbyMatches.length > 0) {
+        setImageSearchResults(nearbyMatches);
+        sheetRef.current?.expand();
+        return;
+      }
 
       router.push({
         pathname: '/tree-details',
         params: treeToRouteParams({
-          id: nearestTree?.id,
-          commonName: nearestTree?.commonName ?? result.commonName ?? undefined,
+          commonName: result.commonName ?? undefined,
           scientificName: result.scientificName,
-          precinct: nearestTree?.precinct ?? undefined,
-          latitude: nearestTree ? String(nearestTree.latitude) : undefined,
-          longitude: nearestTree ? String(nearestTree.longitude) : undefined,
         }),
       });
     } catch (error) {
@@ -268,6 +273,7 @@ export default function MapScreen() {
           value={query}
           onChangeText={(text) => {
             setBloomingOnly(false);
+            setImageSearchResults(null);
             setQuery(text);
           }}
           onFocus={() => sheetRef.current?.expand()}
@@ -317,8 +323,11 @@ export default function MapScreen() {
             setBloomingOnly(value);
             if (value) {
               setQuery('');
+              setImageSearchResults(null);
             }
           }}
+          imageSearchResults={imageSearchResults}
+          onClearImageSearch={() => setImageSearchResults(null)}
         />
       )}
 

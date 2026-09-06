@@ -4,6 +4,7 @@ import {
   Image,
   Pressable,
   Text,
+  View,
 } from 'react-native';
 import BottomSheet, {
   BottomSheetFlatList,
@@ -21,13 +22,22 @@ import {
   searchTreesBySpecies,
   Tree,
 } from '@/services/cityOfMelbourne';
-import { fetchBloomingSpecies } from '@/services/bloomApi';
+import { fetchBloomingSpecies, NearbyTree } from '@/services/bloomApi';
+import { formatDistance } from '@/utils/distance';
+
+type ResultItem = Tree | NearbyTree;
+
+function isNearbyTree(item: ResultItem): item is NearbyTree {
+  return 'distanceMetres' in item;
+}
 
 type Props = {
   query: string;
   bloomingOnly: boolean;
   onBloomingOnlyChange: (value: boolean) => void;
   topInset: number;
+  imageSearchResults: NearbyTree[] | null;
+  onClearImageSearch: () => void;
 };
 
 // pull-up panel over the map: same search
@@ -36,7 +46,14 @@ type Props = {
 // bar fixed to the top of the screen)
 const ExploreSheet = forwardRef<BottomSheet, Props>(
   function ExploreSheet(
-    { query, bloomingOnly, onBloomingOnlyChange, topInset },
+    {
+      query,
+      bloomingOnly,
+      onBloomingOnlyChange,
+      topInset,
+      imageSearchResults,
+      onClearImageSearch,
+    },
     ref
   ) {
     const [results, setResults] =
@@ -54,7 +71,17 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       transform: [{ scale: bloomingScale.value }],
     }));
 
+    const showingImageResults = Boolean(
+      imageSearchResults && imageSearchResults.length > 0
+    );
+
     useEffect(() => {
+      // Photo-search results take over from
+      // both text search and the blooming filter
+      if (showingImageResults) {
+        return;
+      }
+
       // Text search takes over
       // from the blooming filter
       if (bloomingOnly) {
@@ -84,7 +111,7 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       // continues typing
       return () => clearTimeout(timer);
 
-    }, [query, bloomingOnly]);
+    }, [query, bloomingOnly, showingImageResults]);
 
     async function showBlooming() {
       onBloomingOnlyChange(true);
@@ -115,24 +142,30 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
       }
     }
 
-    function openTree(tree: Tree) {
+    function openResult(item: ResultItem) {
+      const fromNearbySearch = isNearbyTree(item);
+
       router.push({
         pathname: '/tree-details',
         params: {
-          commonName: tree.commonName ?? '',
-          scientificName: tree.scientificName ?? '',
-          genus: tree.genus ?? '',
-          family: tree.family ?? '',
-          precinct: tree.precinct ?? '',
-          locationType: tree.locationType ?? '',
-          datePlanted: tree.datePlanted ?? '',
-          ageDescription: tree.ageDescription ?? '',
-          dbh: tree.dbh?.toString() ?? '',
-          latitude: tree.latitude.toString(),
-          longitude: tree.longitude.toString(),
+          commonName: item.commonName ?? '',
+          scientificName: item.scientificName ?? '',
+          genus: fromNearbySearch ? '' : item.genus ?? '',
+          family: fromNearbySearch ? '' : item.family ?? '',
+          precinct: item.precinct ?? '',
+          locationType: fromNearbySearch ? '' : item.locationType ?? '',
+          datePlanted: fromNearbySearch ? '' : item.datePlanted ?? '',
+          ageDescription: fromNearbySearch ? '' : item.ageDescription ?? '',
+          dbh: fromNearbySearch ? '' : item.dbh?.toString() ?? '',
+          latitude: item.latitude.toString(),
+          longitude: item.longitude.toString(),
         },
       });
     }
+
+    const displayData: ResultItem[] = showingImageResults
+      ? imageSearchResults!
+      : results;
 
     return (
       <BottomSheet
@@ -145,83 +178,107 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
         handleIndicatorStyle={explorestyles.handle}
       >
         <BottomSheetFlatList
-          data={results}
+          data={displayData}
           keyExtractor={(item) => item.id}
           contentContainerStyle={explorestyles.listContent}
           ListHeaderComponent={
-            <>
-              <Text style={explorestyles.title}>
-                Find flowers
-              </Text>
+            showingImageResults ? (
+              <>
+                <Text style={explorestyles.title}>
+                  Trees near you
+                </Text>
 
-              <Animated.View style={bloomingAnimatedStyle}>
-                <Pressable
-                  style={({ pressed }) => [
-                    explorestyles.bloomingButton,
-                    pressed && explorestyles.bloomingButtonPressed,
-                  ]}
-                  onPress={showBlooming}
-                  onPressIn={() => {
-                    bloomingScale.value = withSpring(0.92, {
-                      damping: 15,
-                      stiffness: 300,
-                    });
-                  }}
-                  onPressOut={() => {
-                    bloomingScale.value = withSpring(1, {
-                      damping: 6,
-                      stiffness: 200,
-                    });
-                  }}
-                >
-                  {({ pressed }) => (
-                    <>
-                      <Image
-                        source={require('../../../assets/images/cherryblossom.png')}
-                        style={{ width: 30, height: 30, marginRight: 8 }}
-                      />
-                      <Text
-                        style={[
-                          explorestyles.bloomingButtonText,
-                          pressed && explorestyles.bloomingButtonTextPressed,
-                        ]}
-                      >
-                        Blooming now
-                      </Text>
-                    </>
-                  )}
+                <Pressable onPress={onClearImageSearch}>
+                  <Text style={explorestyles.clearImageSearch}>
+                    Clear photo results
+                  </Text>
                 </Pressable>
-              </Animated.View>
-
-              {!loading && bloomingOnly && bloomingError && (
-                <Text style={explorestyles.emptyState}>
-                  Couldn't reach the server. Check your connection and try again.
+              </>
+            ) : (
+              <>
+                <Text style={explorestyles.title}>
+                  Find flowers
                 </Text>
-              )}
 
-              {!loading && bloomingOnly && !bloomingError && results.length === 0 && (
-                <Text style={explorestyles.emptyState}>
-                  Nothing curated as blooming right now.
-                </Text>
-              )}
+                <Animated.View style={bloomingAnimatedStyle}>
+                  <Pressable
+                    style={({ pressed }) => [
+                      explorestyles.bloomingButton,
+                      pressed && explorestyles.bloomingButtonPressed,
+                    ]}
+                    onPress={showBlooming}
+                    onPressIn={() => {
+                      bloomingScale.value = withSpring(0.92, {
+                        damping: 15,
+                        stiffness: 300,
+                      });
+                    }}
+                    onPressOut={() => {
+                      bloomingScale.value = withSpring(1, {
+                        damping: 6,
+                        stiffness: 200,
+                      });
+                    }}
+                  >
+                    {({ pressed }) => (
+                      <>
+                        <Image
+                          source={require('../../../assets/images/cherryblossom.png')}
+                          style={{ width: 30, height: 30, marginRight: 8 }}
+                        />
+                        <Text
+                          style={[
+                            explorestyles.bloomingButtonText,
+                            pressed && explorestyles.bloomingButtonTextPressed,
+                          ]}
+                        >
+                          Blooming now
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                </Animated.View>
 
-              {loading && (
-                <ActivityIndicator
-                  size="small"
-                  color="#db92b1"
-                  style={explorestyles.loading}
-                />
-              )}
-            </>
+                {!loading && bloomingOnly && bloomingError && (
+                  <Text style={explorestyles.emptyState}>
+                    Couldn't reach the server. Check your connection and try again.
+                  </Text>
+                )}
+
+                {!loading && bloomingOnly && !bloomingError && results.length === 0 && (
+                  <Text style={explorestyles.emptyState}>
+                    Nothing curated as blooming right now.
+                  </Text>
+                )}
+
+                {loading && (
+                  <ActivityIndicator
+                    size="small"
+                    color="#db92b1"
+                    style={explorestyles.loading}
+                  />
+                )}
+              </>
+            )
           }
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <Pressable
               style={explorestyles.result}
-              onPress={() => openTree(item)}
+              onPress={() => openResult(item)}
             >
-              <Text style={explorestyles.commonName}>
-                {item.commonName ?? 'Unknown tree'}
-              </Text>
+              <View style={explorestyles.resultNameRow}>
+                <Text style={explorestyles.commonName}>
+                  {item.commonName ?? 'Unknown tree'}
+                </Text>
+
+                {showingImageResults && index === 0 && (
+                  <View style={explorestyles.nearestBadge}>
+                    <Text style={explorestyles.nearestBadgeText}>
+                      Nearest
+                    </Text>
+                  </View>
+                )}
+              </View>
 
               <Text style={explorestyles.scientificName}>
                 {item.scientificName ?? 'Scientific name unavailable'}
@@ -229,6 +286,9 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
 
               <Text style={explorestyles.precinct}>
                 {item.precinct ?? 'Melbourne'}
+                {isNearbyTree(item)
+                  ? ` · ${formatDistance(item.distanceMetres)}`
+                  : ''}
               </Text>
             </Pressable>
           )}

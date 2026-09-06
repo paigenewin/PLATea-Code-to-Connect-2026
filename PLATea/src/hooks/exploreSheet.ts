@@ -75,4 +75,30 @@ export const explorestyles = StyleSheet.create({
     marginTop: 4,
     opacity: 0.6,
   },
+
+  resultNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  nearestBadge: {
+    backgroundColor: '#ffd9ea',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+
+  nearestBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#c2116c',
+  },
+
+  clearImageSearch: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#e43c8a',
+    marginBottom: 12,
+  },
 });
