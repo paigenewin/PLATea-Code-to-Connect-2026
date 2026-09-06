@@ -9,7 +9,7 @@ Group Member:
 - Phuong Trang Tran (phuongtrangt673@gmail.com)
 - Nam Anh Trinh
 
-🌸 PeTAL
+# 🌸 PeTAL
 
 **PeTAL** is a mobile application for discovering trees and flowering plants around Melbourne, developed by **Team PLATea** for **Code to Connect 2026**.
 
