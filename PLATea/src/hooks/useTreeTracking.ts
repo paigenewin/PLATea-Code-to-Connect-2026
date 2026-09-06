@@ -46,6 +46,46 @@ export function useTreeTracking({
     );
 
 
+  /*
+   * Get the user's location as soon as the app
+   * opens, so the location marker appears right
+   * away and starting a track later doesn't have
+   * to wait on a first fix at all. Doesn't touch
+   * the camera or start live tracking - that only
+   * happens once the user presses Track.
+   */
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchInitialLocation() {
+      const permission =
+        await Location.requestForegroundPermissionsAsync();
+
+      if (permission.status !== 'granted') {
+        return;
+      }
+
+      const lastKnown =
+        await Location.getLastKnownPositionAsync();
+
+      if (cancelled || !lastKnown) {
+        return;
+      }
+
+      setUserLocation({
+        latitude: lastKnown.coords.latitude,
+        longitude: lastKnown.coords.longitude,
+      });
+    }
+
+    fetchInitialLocation();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+
   async function startTracking() {
     if (
       !treeLatitude ||
@@ -90,55 +130,57 @@ export function useTreeTracking({
 
 
     /*
-     * Get the user's current position
-     * immediately.
+     * Use the device's cached last-known position
+     * immediately, instead of waiting on a fresh
+     * high-accuracy GPS fix, which can take several
+     * seconds (longer indoors) and was blocking route
+     * lookup from starting at all. The live position
+     * watcher below refines this within moments.
      */
-    const current =
-      await Location.getCurrentPositionAsync({
-        accuracy:
-          Location.Accuracy.High,
-      });
+    const lastKnown =
+      await Location.getLastKnownPositionAsync();
+
+    if (lastKnown) {
+      const cachedUserLocation = {
+        latitude:
+          lastKnown.coords.latitude,
+
+        longitude:
+          lastKnown.coords.longitude,
+      };
 
 
-    const currentUserLocation = {
-      latitude:
-        current.coords.latitude,
-
-      longitude:
-        current.coords.longitude,
-    };
+      setUserLocation(
+        cachedUserLocation
+      );
 
 
-    setUserLocation(
-      currentUserLocation
-    );
+      setDistance(
+        calculateDistance(
+          cachedUserLocation.latitude,
+          cachedUserLocation.longitude,
+          treeLat,
+          treeLng
+        )
+      );
 
 
-    setDistance(
-      calculateDistance(
-        currentUserLocation.latitude,
-        currentUserLocation.longitude,
-        treeLat,
-        treeLng
-      )
-    );
+      /*
+       * Move the map to the user
+       * when tracking starts.
+       */
+      mapRef.current?.animateCamera(
+        {
+          center:
+            cachedUserLocation,
 
-
-    /*
-     * Move the map to the user
-     * when tracking starts.
-     */
-    mapRef.current?.animateCamera(
-      {
-        center:
-          currentUserLocation,
-
-        zoom: 17,
-      },
-      {
-        duration: 700,
-      }
-    );
+          zoom: 17,
+        },
+        {
+          duration: 700,
+        }
+      );
+    }
 
 
     /*
