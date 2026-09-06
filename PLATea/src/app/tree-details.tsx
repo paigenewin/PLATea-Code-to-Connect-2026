@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import {
   Pressable,
   ScrollView,
@@ -11,7 +12,19 @@ import {
   useLocalSearchParams,
 } from 'expo-router';
 
+import {
+  BloomStatus,
+  fetchBloomPrediction,
+} from '@/services/bloomApi';
 
+import { treeToRouteParams } from '@/utils/treeParams';
+
+const BLOOM_STATUS_TEXT: Record<BloomStatus, string> = {
+  'blooming': 'Blooming now',
+  'blooming_soon': 'Blooming soon',
+  'not_in_season': 'Not in season',
+  'unknown': 'Status unknown',
+};
 export default function TreeDetailsScreen() {
 
   /*
@@ -47,6 +60,40 @@ export default function TreeDetailsScreen() {
   }
 
 
+  const [bloomStatus, setBloomStatus] =
+    useState<BloomStatus | null>(null);
+
+  const [bloomLoading, setBloomLoading] =
+    useState(false);
+
+  /*
+   * Fetch the bloom prediction for this
+   * tree's species from the PLATea server.
+   */
+  useEffect(() => {
+    if (!tree.scientificName) {
+      setBloomStatus(null);
+      return;
+    }
+
+    let cancelled = false;
+    setBloomLoading(true);
+
+    fetchBloomPrediction(tree.scientificName)
+      .then((status) => {
+        if (!cancelled) setBloomStatus(status);
+      })
+      .catch(() => {
+        if (!cancelled) setBloomStatus('unknown');
+      })
+      .finally(() => {
+        if (!cancelled) setBloomLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tree.scientificName]);
   /*
    * Go to the Map and send this
    * tree's information with it.
@@ -64,40 +111,7 @@ export default function TreeDetailsScreen() {
       pathname: '/',
 
       params: {
-        id: tree.id ?? '',
-
-        commonName:
-          tree.commonName ?? '',
-
-        scientificName:
-          tree.scientificName ?? '',
-
-        genus:
-          tree.genus ?? '',
-
-        family:
-          tree.family ?? '',
-
-        precinct:
-          tree.precinct ?? '',
-
-        locationType:
-          tree.locationType ?? '',
-
-        datePlanted:
-          tree.datePlanted ?? '',
-
-        ageDescription:
-          tree.ageDescription ?? '',
-
-        dbh:
-          tree.dbh ?? '',
-
-        latitude:
-          tree.latitude,
-
-        longitude:
-          tree.longitude,
+        ...treeToRouteParams(tree),
 
         /*
          * Makes the map react even
@@ -148,12 +162,19 @@ export default function TreeDetailsScreen() {
         </Text>
 
         <Text style={styles.bloomStatus}>
-          Prediction coming soon
+          {bloomLoading
+            ? 'Fetching prediction...'
+            : bloomStatus
+              ? BLOOM_STATUS_TEXT[bloomStatus]
+              : 'Status unknown'}
         </Text>
 
         <Text style={styles.bloomDescription}>
-          Bloom prediction will later use
-          species, season and weather data.
+          {bloomLoading
+            ? 'Looking up this species’ bloom prediction.'
+            : BLOOM_STATUS_TEXT[
+                bloomStatus ?? 'unknown'
+              ]}
         </Text>
 
       </View>
