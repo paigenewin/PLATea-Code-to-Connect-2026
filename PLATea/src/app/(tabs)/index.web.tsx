@@ -1,11 +1,17 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import React, { useEffect, useState } from 'react';
+import { setWorkerUrl } from 'maplibre-gl';
 import Map, { Marker } from 'react-map-gl/maplibre';
 import { CherryBlossomBorder, FlowerBorderMode } from '../../components/flower-border';
 import { LoadingScreen } from '../../components/loading-screen';
 import { Bounds, fetchMelbourneTrees, Tree } from '../../services/cityOfMelbourne';
 import { styles } from '../../styles/index.web';
+
+
+setWorkerUrl(
+  'https://cdn.jsdelivr.net/npm/maplibre-gl@6.10.0/dist/maplibre-gl-worker.mjs'
+);
 
 const MELBOURNE_BOUNDS: Bounds = {
   minLat: -37.97,
@@ -19,24 +25,7 @@ const MELBOURNE_CENTER = {
   longitude: 144.9631,
 };
 
-const RASTER_STYLE = {
-  version: 8 as const,
-  sources: {
-    osm: {
-      type: 'raster' as const,
-      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-      tileSize: 256,
-      attribution: '© OpenStreetMap contributors',
-    },
-  },
-  layers: [
-    {
-      id: 'osm-tiles',
-      type: 'raster' as const,
-      source: 'osm',
-    },
-  ],
-};
+const OPENFREEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 
 export default function MapScreenWeb() {
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -79,13 +68,13 @@ export default function MapScreenWeb() {
             longitude: MELBOURNE_CENTER.longitude,
             zoom: 13,
           }}
-          mapStyle={RASTER_STYLE}
+          mapStyle={OPENFREEMAP_STYLE}
           style={{ width: '100%', height: '100%' }}
           onLoad={(event) => {
             const map = event.target;
             map.on('style.load',() => {
                 map.setPaintProperty('water', 'fill-color', '#a9d2fc');
-                map.setPaintProperty('')
+                map.setPaintProperty('background', 'background-color', '#ff5884');
             });
           }}
         >
