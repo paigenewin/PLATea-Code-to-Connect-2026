@@ -40,11 +40,8 @@ export const styles = StyleSheet.create({
     opacity: 0.55,
   },
   marker: {
-    position: 'absolute' as const,
     width: 30,
     height: 40,
-    marginLeft: -15,
-    marginTop: -40,
   },
   loadingOverlay: {
     position: 'absolute' as const,

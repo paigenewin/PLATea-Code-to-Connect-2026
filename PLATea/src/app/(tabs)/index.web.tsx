@@ -1,9 +1,11 @@
+import 'maplibre-gl/dist/maplibre-gl.css';
+
 import React, { useEffect, useState } from 'react';
-import { Image, View } from 'react-native';
+import Map, { Marker } from 'react-map-gl/maplibre';
 import { CherryBlossomBorder, FlowerBorderMode } from '../../components/flower-border';
 import { LoadingScreen } from '../../components/loading-screen';
 import { Bounds, fetchMelbourneTrees, Tree } from '../../services/cityOfMelbourne';
-import {styles} from '../../styles/index.web';
+import { styles } from '../../styles/index.web';
 
 const MELBOURNE_BOUNDS: Bounds = {
   minLat: -37.97,
@@ -12,17 +14,29 @@ const MELBOURNE_BOUNDS: Bounds = {
   maxLng: 145.12,
 };
 
-function getMarkerPosition(tree: Tree) {
-  const left = ((tree.longitude - MELBOURNE_BOUNDS.minLng) /
-    (MELBOURNE_BOUNDS.maxLng - MELBOURNE_BOUNDS.minLng)) * 100;
-  const top = ((MELBOURNE_BOUNDS.maxLat - tree.latitude) /
-    (MELBOURNE_BOUNDS.maxLat - MELBOURNE_BOUNDS.minLat)) * 100;
+const MELBOURNE_CENTER = {
+  latitude: -37.8136,
+  longitude: 144.9631,
+};
 
-  return {
-    left: `${Math.max(0, Math.min(100, left))}%` as `${number}%`,
-    top: `${Math.max(0, Math.min(100, top))}%` as `${number}%`,
-  };
-}
+const RASTER_STYLE = {
+  version: 8 as const,
+  sources: {
+    osm: {
+      type: 'raster' as const,
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      attribution: '© OpenStreetMap contributors',
+    },
+  },
+  layers: [
+    {
+      id: 'osm-tiles',
+      type: 'raster' as const,
+      source: 'osm',
+    },
+  ],
+};
 
 export default function MapScreenWeb() {
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -32,10 +46,7 @@ export default function MapScreenWeb() {
   useEffect(() => {
     async function loadTrees() {
       setLoading(true);
-      const startedAt = Date.now();
       const results = await fetchMelbourneTrees(MELBOURNE_BOUNDS, 1000);
-      const remainingTime = Math.max(0, 5000 - (Date.now() - startedAt));
-      await new Promise((resolve) => setTimeout(resolve, remainingTime));
       setTrees(results);
       setLoading(false);
     }
@@ -44,25 +55,59 @@ export default function MapScreenWeb() {
   }, []);
 
   return (
-    <View style={styles.page}>
-      <View style={styles.mapFrame}>
-        {loading && (
-          <LoadingScreen />
-        )}
-        <View style={styles.mapSurface}>
-          <View style={styles.water} />
-          <View style={styles.land} />
+    <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#edf3ef',
+        padding: 12,
+        boxSizing: 'border-box', }}>
+      <div style={{ width: '100%',
+          height: '100%',
+          borderRadius: 22,
+          overflow: 'hidden',
+          position: 'relative'}}>
+        {loading && <LoadingScreen />}
+
+        <Map
+          initialViewState={{
+            latitude: MELBOURNE_CENTER.latitude,
+            longitude: MELBOURNE_CENTER.longitude,
+            zoom: 13,
+          }}
+          mapStyle={RASTER_STYLE}
+          style={{ width: '100%', height: '100%' }}
+          onLoad={(event) => {
+            const map = event.target;
+            map.on('style.load',() => {
+                map.setPaintProperty('water', 'fill-color', '#a9d2fc');
+                map.setPaintProperty('')
+            });
+          }}
+        >
           {trees.map((tree, index) => (
-              <Image
+            <Marker
               key={`${tree.id}-${index}`}
-                source={require('../../../assets/images/location_pin_lightmode.png')}
-              accessibilityLabel={tree.commonName ?? 'Unknown tree'}
-              style={[styles.marker, getMarkerPosition(tree)]}
-            />
+              latitude={tree.latitude}
+              longitude={tree.longitude}
+              anchor="bottom"
+            >
+              <img
+                src={require('../../../assets/images/location_pin_lightmode.png')}
+                alt={tree.commonName ?? 'Unknown tree'}
+                style={styles.marker}
+              />
+            </Marker>
           ))}
-        </View>
+        </Map>
+
         <CherryBlossomBorder mode={flowerMode} />
-      </View>
-    </View>
+      </div>
+    </div>
   );
+  
 }
