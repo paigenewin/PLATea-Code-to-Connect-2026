@@ -7,7 +7,14 @@ import { CherryBlossomBorder, FlowerBorderMode } from '../../components/flower-b
 import { LoadingScreen } from '../../components/loading-screen';
 import { Bounds, fetchMelbourneTrees, Tree } from '../../services/cityOfMelbourne';
 import { styles } from '../../styles/index.web';
+import { useColorScheme } from 'react-native';
 
+// Darkmode and lightmode
+
+const LIGHTMODE_STYLE = 'https://tiles.openfreemap.org/styles/positron';
+const DARKMODE_STYLE =  'https://tiles.openfreemap.org/styles/fiord';
+const colorScheme = useColorScheme();
+const mapStyle = colorScheme === 'dark' ? DARKMODE_STYLE : LIGHTMODE_STYLE;
 
 setWorkerUrl(
   'https://cdn.jsdelivr.net/npm/maplibre-gl@6.10.0/dist/maplibre-gl-worker.mjs'
@@ -25,7 +32,6 @@ const MELBOURNE_CENTER = {
   longitude: 144.9631,
 };
 
-const OPENFREEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 
 export default function MapScreenWeb() {
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -68,15 +74,9 @@ export default function MapScreenWeb() {
             longitude: MELBOURNE_CENTER.longitude,
             zoom: 13,
           }}
-          mapStyle={OPENFREEMAP_STYLE}
+          mapStyle={mapStyle}
           style={{ width: '100%', height: '100%' }}
-          onLoad={(event) => {
-            const map = event.target;
-            map.on('style.load',() => {
-                map.setPaintProperty('water', 'fill-color', '#a9d2fc');
-                map.setPaintProperty('background', 'background-color', '#ff5884');
-            });
-          }}
+
         >
           {trees.map((tree, index) => (
             <Marker
