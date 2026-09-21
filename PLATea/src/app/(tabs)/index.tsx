@@ -6,7 +6,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import {styles} from '../../hooks/index';
+import {styles} from '../../styles/index';
 
 import { Bounds, Tree } from '@/services/cityOfMelbourne';
 import TreeMarkers from '@/components/map/treeMarkers';

@@ -1,6 +1,4 @@
-const API_URL =
-  process.env.EXPO_PUBLIC_API_URL ??
-  'http://localhost:3000';
+import { API_URL } from './apiUrl';
 
 export type IdentifyResult = {
   identified: boolean;

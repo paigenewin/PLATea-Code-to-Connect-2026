@@ -1,13 +1,13 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { Alert } from 'react-native';
-import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import { calculateDistance } from '@/utils/distance';
+import { MapCameraController } from '@/types/mapCamera';
 
 
 type Props = {
-  mapRef: RefObject<MapView | null>;
+  mapRef: RefObject<MapCameraController | null>;
   treeLatitude?: string;
   treeLongitude?: string;
 };

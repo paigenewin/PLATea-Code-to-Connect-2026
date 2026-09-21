@@ -63,5 +63,24 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700' as const,
   },
+  searchBar: {
+      position: 'absolute',
+      left: 16,
+      right: 16,
+      zIndex: 30,
+
+      backgroundColor: 'white',
+      borderRadius: 14,
+
+      shadowColor: '#000',
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      elevation: 30,
+  },
 }
+
 );

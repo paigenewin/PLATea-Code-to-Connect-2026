@@ -1,8 +1,5 @@
 import { Tree } from './cityOfMelbourne';
-
-const API_URL =
-  process.env.EXPO_PUBLIC_API_URL ??
-  'http://localhost:3000';
+import { API_URL } from './apiUrl';
 
 export type BloomStatus =
   | 'not_in_season'

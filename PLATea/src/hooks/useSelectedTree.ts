@@ -1,6 +1,7 @@
 import { RefObject, useEffect } from 'react';
-import MapView from 'react-native-maps';
 import { useLocalSearchParams } from 'expo-router';
+
+import { MapCameraController } from '@/types/mapCamera';
 
 export type SelectedTreeParams = {
   id?: string;
@@ -20,7 +21,7 @@ export type SelectedTreeParams = {
 };
 
 type Options = {
-  mapRef: RefObject<MapView | null>;
+  mapRef: RefObject<MapCameraController | null>;
   mapReady: boolean;
 };
 
