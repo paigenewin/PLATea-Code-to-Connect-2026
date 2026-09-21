@@ -28,7 +28,7 @@ import { useMelbourneTrees } from '@/hooks/useMelbourneTrees';
 import { useTreeTracking } from '@/hooks/useTreeTracking';
 import { useWalkingRoute } from '@/hooks/routeFinding';
 import { MapCameraController } from '@/types/mapCamera';
-
+import LoginScreen from '@/app/(tabs)/login';
 // Darkmode and lightmode
 
 const LIGHTMODE_STYLE = 'https://tiles.openfreemap.org/styles/positron';
