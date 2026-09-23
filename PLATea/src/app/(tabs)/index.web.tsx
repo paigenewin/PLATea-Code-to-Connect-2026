@@ -5,8 +5,9 @@ import { setWorkerUrl } from 'maplibre-gl';
 import Map, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { CherryBlossomBorder, FlowerBorderMode } from '../../components/flower-border';
 
-import { styles } from '../../styles/index.web';
-import { Alert, useColorScheme } from 'react-native';
+import {styles} from '../../styles/index.web';
+import {Alert} from 'react-native';
+import {useColorScheme} from '@/hooks/use-color-scheme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { router } from 'expo-router';
