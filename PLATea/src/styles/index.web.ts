@@ -13,32 +13,7 @@ export const styles = StyleSheet.create({
     borderRadius: 22,
     backgroundColor: '#c5d9c7',
   },
-  mapSurface: {
-    flex: 1,
-    position: 'relative' as const,
-    overflow: 'hidden' as const,
-    backgroundColor: '#b9d3bd',
-  },
-  water: {
-    position: 'absolute' as const,
-    left: '9%' as const,
-    top: '-8%' as const,
-    width: '34%' as const,
-    height: '125%' as const,
-    backgroundColor: '#a8d3d2',
-    transform: [{ rotate: '16deg' }],
-    opacity: 0.8,
-  },
-  land: {
-    position: 'absolute' as const,
-    left: '34%' as const,
-    top: '10%' as const,
-    width: '48%' as const,
-    height: '72%' as const,
-    borderRadius: 140,
-    backgroundColor: '#d8e1bb',
-    opacity: 0.55,
-  },
+
   marker: {
     width: 30,
     height: 40,
@@ -80,6 +55,15 @@ export const styles = StyleSheet.create({
         height: 3,
       },
       elevation: 30,
+  },
+  button: {
+    position: 'absolute',
+    zIndex: 31,
+    top: 16,
+    right: 10,  
+    width: 100,
+    height: 50,
+    backgroundColor: '#ff62ab',
   },
 }
 

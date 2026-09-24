@@ -6,11 +6,11 @@ import Map, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { CherryBlossomBorder, FlowerBorderMode } from '../../components/flower-border';
 
 import {styles} from '../../styles/index.web';
-import {Alert} from 'react-native';
+import {Alert, Pressable, Text} from 'react-native';
 import {useColorScheme} from '@/hooks/use-color-scheme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 
@@ -29,7 +29,6 @@ import { useMelbourneTrees } from '@/hooks/useMelbourneTrees';
 import { useTreeTracking } from '@/hooks/useTreeTracking';
 import { useWalkingRoute } from '@/hooks/routeFinding';
 import { MapCameraController } from '@/types/mapCamera';
-import LoginScreen from '@/app/(tabs)/login';
 // Darkmode and lightmode
 
 const LIGHTMODE_STYLE = 'https://tiles.openfreemap.org/styles/positron';
@@ -458,6 +457,12 @@ export default function MapScreenWeb() {
             onCameraPress={searchByImage}
           />
         )}
+        {/*Login button*/}
+        <Link href ="/login" asChild>
+          <Pressable style={styles.button}>
+            <Text>Login</Text>
+          </Pressable>
+        </Link>
 
         {/*
             selected Tree to track

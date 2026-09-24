@@ -203,7 +203,7 @@ const ExploreSheet = forwardRef<BottomSheet, Props>(
                 <Text style={explorestyles.title}>
                   Find flowers
                 </Text>
-
+              {/* The blooming filter button */}
                 <Animated.View style={bloomingAnimatedStyle}>
                   <Pressable
                     style={({ pressed }) => [
