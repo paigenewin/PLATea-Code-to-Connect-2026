@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
       left: 16,
       right: 16,
       zIndex: 30,
+      width: 376,
 
       backgroundColor: 'white',
       borderRadius: 14,
@@ -57,14 +58,29 @@ export const styles = StyleSheet.create({
       elevation: 30,
   },
   button: {
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
     position: 'absolute',
-    zIndex: 31,
-    top: 16,
-    right: 10,  
-    width: 100,
+    zIndex: 30,
+    top: 15,
+    right: 20,  
+    width: 50,
     height: 50,
-    backgroundColor: '#ff62ab',
+    borderRadius: 25,
+    backgroundColor: '#ffbfdd',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    elevation: 30,
   },
-}
+  loginText: {
+    color: '#891032',
+    fontWeight: '300' as const,
+  },
+
+  },
 
 );

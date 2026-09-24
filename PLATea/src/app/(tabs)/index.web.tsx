@@ -460,7 +460,7 @@ export default function MapScreenWeb() {
         {/*Login button*/}
         <Link href ="/login" asChild>
           <Pressable style={styles.button}>
-            <Text>Login</Text>
+            <Text style={styles.loginText}>Login</Text>
           </Pressable>
         </Link>
 
